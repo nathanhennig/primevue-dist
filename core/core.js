@@ -5,19 +5,25 @@ this.primevue.utils = (function (exports) {
     var DomHandler = {
 
         innerWidth(el) {
-            let width = el.offsetWidth;
-            let style = getComputedStyle(el);
+            if (el) {
+                let width = el.offsetWidth;
+                let style = getComputedStyle(el);
 
-            width += parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-            return width;
+                width += parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+                return width;
+            }
+            return 0;
         },
 
         width(el) {
-            let width = el.offsetWidth;
-            let style = getComputedStyle(el);
+            if (el) {
+                let width = el.offsetWidth;
+                let style = getComputedStyle(el);
 
-            width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-            return width;
+                width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+                return width;
+            }
+            return 0;
         },
 
         getWindowScrollTop() {
@@ -41,9 +47,7 @@ this.primevue.utils = (function (exports) {
 
                 return width;
             }
-            else {
-                return 0;
-            }
+            return 0;
         },
 
         getOuterHeight(el, margin) {
@@ -57,9 +61,7 @@ this.primevue.utils = (function (exports) {
 
                 return height;
             }
-            else {
-                return 0;
-            }
+            return 0;
         },
 
         getClientHeight(el, margin) {
@@ -72,9 +74,8 @@ this.primevue.utils = (function (exports) {
                 }
 
                 return height;
-            } else {
-                return 0;
             }
+            return 0;
         },
 
         getViewport() {
@@ -85,56 +86,71 @@ this.primevue.utils = (function (exports) {
                 w = win.innerWidth || e.clientWidth || g.clientWidth,
                 h = win.innerHeight || e.clientHeight || g.clientHeight;
 
-            return {width: w, height: h};
+            return { width: w, height: h };
         },
 
         getOffset(el) {
-            var rect = el.getBoundingClientRect();
+            if (el) {
+                let rect = el.getBoundingClientRect();
+
+                return {
+                    top: rect.top + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0),
+                    left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0),
+                };
+            }
 
             return {
-                top: rect.top + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0),
-                left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0),
+                top: 'auto',
+                left: 'auto'
             };
         },
 
         index(element) {
-            let children = element.parentNode.childNodes;
-            let num = 0;
-            for (var i = 0; i < children.length; i++) {
-                if (children[i] === element) return num;
-                if (children[i].nodeType === 1) num++;
+            if (element) {
+                let children = element.parentNode.childNodes;
+                let num = 0;
+                for (let i = 0; i < children.length; i++) {
+                    if (children[i] === element) return num;
+                    if (children[i].nodeType === 1) num++;
+                }
             }
             return -1;
         },
 
         addMultipleClasses(element, className) {
-            if (element.classList) {
-                let styles = className.split(' ');
-                for (let i = 0; i < styles.length; i++) {
-                    element.classList.add(styles[i]);
-                }
+            if (element && className) {
+                if (element.classList) {
+                    let styles = className.split(' ');
+                    for (let i = 0; i < styles.length; i++) {
+                        element.classList.add(styles[i]);
+                    }
 
-            }
-            else {
-                let styles = className.split(' ');
-                for (let i = 0; i < styles.length; i++) {
-                    element.className += ' ' + styles[i];
+                }
+                else {
+                    let styles = className.split(' ');
+                    for (let i = 0; i < styles.length; i++) {
+                        element.className += ' ' + styles[i];
+                    }
                 }
             }
         },
 
         addClass(element, className) {
-            if (element.classList)
-                element.classList.add(className);
-            else
-                element.className += ' ' + className;
+            if (element && className) {
+                if (element.classList)
+                    element.classList.add(className);
+                else
+                    element.className += ' ' + className;
+            }
         },
 
         removeClass(element, className) {
-            if (element.classList)
-                element.classList.remove(className);
-            else
-                element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+            if (element && className) {
+                if (element.classList)
+                    element.classList.remove(className);
+                else
+                    element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+            }
         },
 
         hasClass(element, className) {
@@ -149,99 +165,112 @@ this.primevue.utils = (function (exports) {
         },
 
         find(element, selector) {
-            return element.querySelectorAll(selector);
+            return element ? element.querySelectorAll(selector) : [];
         },
 
         findSingle(element, selector) {
-            return element.querySelector(selector);
+            if (element) {
+                return element.querySelector(selector);
+            }
+            return null;
         },
 
         getHeight(el) {
-            let height = el.offsetHeight;
-            let style = getComputedStyle(el);
+            if (el) {
+                let height = el.offsetHeight;
+                let style = getComputedStyle(el);
 
-            height -= parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+                height -= parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
 
-            return height;
+                return height;
+            }
+            return 0;
         },
 
         getWidth(el) {
-            let width = el.offsetWidth;
-            let style = getComputedStyle(el);
+            if (el) {
+                let width = el.offsetWidth;
+                let style = getComputedStyle(el);
 
-            width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+                width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
 
-            return width;
+                return width;
+            }
+            return 0;
         },
 
         absolutePosition(element, target) {
-            let elementDimensions = element.offsetParent ? { width: element.offsetWidth, height: element.offsetHeight } : this.getHiddenElementDimensions(element);
-            let elementOuterHeight = elementDimensions.height;
-            let elementOuterWidth = elementDimensions.width;
-            let targetOuterHeight = target.offsetHeight;
-            let targetOuterWidth = target.offsetWidth;
-            let targetOffset = target.getBoundingClientRect();
-            let windowScrollTop = this.getWindowScrollTop();
-            let windowScrollLeft = this.getWindowScrollLeft();
-            let viewport = this.getViewport();
-            let top, left;
+            if (element) {
+                let elementDimensions = element.offsetParent ? { width: element.offsetWidth, height: element.offsetHeight } : this.getHiddenElementDimensions(element);
+                let elementOuterHeight = elementDimensions.height;
+                let elementOuterWidth = elementDimensions.width;
+                let targetOuterHeight = target.offsetHeight;
+                let targetOuterWidth = target.offsetWidth;
+                let targetOffset = target.getBoundingClientRect();
+                let windowScrollTop = this.getWindowScrollTop();
+                let windowScrollLeft = this.getWindowScrollLeft();
+                let viewport = this.getViewport();
+                let top, left;
 
-            if (targetOffset.top + targetOuterHeight + elementOuterHeight > viewport.height) {
-                top = targetOffset.top + windowScrollTop - elementOuterHeight;
-                element.style.transformOrigin = 'bottom';
+                if (targetOffset.top + targetOuterHeight + elementOuterHeight > viewport.height) {
+                    top = targetOffset.top + windowScrollTop - elementOuterHeight;
+                    element.style.transformOrigin = 'bottom';
 
-                if (top < 0) {
-                    top = windowScrollTop;
+                    if (top < 0) {
+                        top = windowScrollTop;
+                    }
                 }
-            }
-            else {
-                top = targetOuterHeight + targetOffset.top + windowScrollTop;
-                element.style.transformOrigin = 'top';
-            }
+                else {
+                    top = targetOuterHeight + targetOffset.top + windowScrollTop;
+                    element.style.transformOrigin = 'top';
+                }
 
-            if (targetOffset.left + elementOuterWidth > viewport.width)
-                left = Math.max(0, targetOffset.left + windowScrollLeft + targetOuterWidth - elementOuterWidth);
-            else
-                left = targetOffset.left + windowScrollLeft;
+                if (targetOffset.left + elementOuterWidth > viewport.width)
+                    left = Math.max(0, targetOffset.left + windowScrollLeft + targetOuterWidth - elementOuterWidth);
+                else
+                    left = targetOffset.left + windowScrollLeft;
 
-            element.style.top = top + 'px';
-            element.style.left = left + 'px';
+                element.style.top = top + 'px';
+                element.style.left = left + 'px';
+            }
         },
 
         relativePosition(element, target) {
-            let elementDimensions = element.offsetParent ? { width: element.offsetWidth, height: element.offsetHeight } : this.getHiddenElementDimensions(element);
-            const targetHeight = target.offsetHeight;
-            const targetOffset = target.getBoundingClientRect();
-            const viewport = this.getViewport();
-            let top, left;
+            if (element) {
+                let elementDimensions = element.offsetParent ? { width: element.offsetWidth, height: element.offsetHeight } : this.getHiddenElementDimensions(element);
+                const targetHeight = target.offsetHeight;
+                const targetOffset = target.getBoundingClientRect();
+                const viewport = this.getViewport();
+                let top, left;
 
-            if ((targetOffset.top + targetHeight + elementDimensions.height) > viewport.height) {
-                top = -1 * (elementDimensions.height);
-                element.style.transformOrigin = 'bottom';
-                if (targetOffset.top + top < 0) {
-                    top = -1 * targetOffset.top;
+                if ((targetOffset.top + targetHeight + elementDimensions.height) > viewport.height) {
+                    top = -1 * (elementDimensions.height);
+                    element.style.transformOrigin = 'bottom';
+                    if (targetOffset.top + top < 0) {
+                        top = -1 * targetOffset.top;
+                    }
                 }
-            }
-            else {
-                top = targetHeight;
-                element.style.transformOrigin = 'top';
-            }
+                else {
+                    top = targetHeight;
+                    element.style.transformOrigin = 'top';
+                }
 
-            if (elementDimensions.width > viewport.width) {
-                // element wider then viewport and cannot fit on screen (align at left side of viewport)
-                left = targetOffset.left * -1;
-            }
-            else if ((targetOffset.left + elementDimensions.width) > viewport.width) {
-                // element wider then viewport but can be fit on screen (align at right side of viewport)
-                left = (targetOffset.left + elementDimensions.width - viewport.width) * -1;
-            }
-            else {
-                // element fits on screen (align with target)
-                left = 0;
-            }
+                if (elementDimensions.width > viewport.width) {
+                    // element wider then viewport and cannot fit on screen (align at left side of viewport)
+                    left = targetOffset.left * -1;
+                }
+                else if ((targetOffset.left + elementDimensions.width) > viewport.width) {
+                    // element wider then viewport but can be fit on screen (align at right side of viewport)
+                    left = (targetOffset.left + elementDimensions.width - viewport.width) * -1;
+                }
+                else {
+                    // element fits on screen (align with target)
+                    left = 0;
+                }
 
-            element.style.top = top + 'px';
-            element.style.left = left + 'px';
+                element.style.top = top + 'px';
+                element.style.left = left + 'px';
+            }
         },
 
         getParents(element, parents = []) {
@@ -281,71 +310,84 @@ this.primevue.utils = (function (exports) {
         },
 
         getHiddenElementOuterHeight(element) {
-            element.style.visibility = 'hidden';
-            element.style.display = 'block';
-            let elementHeight = element.offsetHeight;
-            element.style.display = 'none';
-            element.style.visibility = 'visible';
+            if (element) {
+                element.style.visibility = 'hidden';
+                element.style.display = 'block';
+                let elementHeight = element.offsetHeight;
+                element.style.display = 'none';
+                element.style.visibility = 'visible';
 
-            return elementHeight;
+                return elementHeight;
+            }
+            return 0;
         },
 
         getHiddenElementOuterWidth(element) {
-            element.style.visibility = 'hidden';
-            element.style.display = 'block';
-            let elementWidth = element.offsetWidth;
-            element.style.display = 'none';
-            element.style.visibility = 'visible';
+            if (element) {
+                element.style.visibility = 'hidden';
+                element.style.display = 'block';
+                let elementWidth = element.offsetWidth;
+                element.style.display = 'none';
+                element.style.visibility = 'visible';
 
-            return elementWidth;
+                return elementWidth;
+            }
+            return 0;
         },
 
         getHiddenElementDimensions(element) {
-            var dimensions = {};
-            element.style.visibility = 'hidden';
-            element.style.display = 'block';
-            dimensions.width = element.offsetWidth;
-            dimensions.height = element.offsetHeight;
-            element.style.display = 'none';
-            element.style.visibility = 'visible';
+            if (element) {
+                let dimensions = {};
+                element.style.visibility = 'hidden';
+                element.style.display = 'block';
+                dimensions.width = element.offsetWidth;
+                dimensions.height = element.offsetHeight;
+                element.style.display = 'none';
+                element.style.visibility = 'visible';
 
-            return dimensions;
+                return dimensions;
+            }
+            return 0;
         },
 
         fadeIn(element, duration) {
-            element.style.opacity = 0;
+            if (element) {
+                element.style.opacity = 0;
 
-            var last = +new Date();
-            var opacity = 0;
-            var tick = function () {
-                opacity = +element.style.opacity + (new Date().getTime() - last) / duration;
-                element.style.opacity = opacity;
-                last = +new Date();
+                let last = +new Date();
+                let opacity = 0;
+                let tick = function () {
+                    opacity = +element.style.opacity + (new Date().getTime() - last) / duration;
+                    element.style.opacity = opacity;
+                    last = +new Date();
 
-                if (+opacity < 1) {
-                    (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
-                }
-            };
+                    if (+opacity < 1) {
+                        (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+                    }
+                };
 
-            tick();
+                tick();
+            }
         },
 
         fadeOut(element, ms) {
-            var opacity = 1,
-                interval = 50,
-                duration = ms,
-                gap = interval / duration;
+            if (element) {
+                let opacity = 1,
+                    interval = 50,
+                    duration = ms,
+                    gap = interval / duration;
 
-            let fading = setInterval(() => {
-                opacity -= gap;
+                let fading = setInterval(() => {
+                    opacity -= gap;
 
-                if (opacity <= 0) {
-                    opacity = 0;
-                    clearInterval(fading);
-                }
+                    if (opacity <= 0) {
+                        opacity = 0;
+                        clearInterval(fading);
+                    }
 
-                element.style.opacity = opacity;
-            }, interval);
+                    element.style.opacity = opacity;
+                }, interval);
+            }
         },
 
         getUserAgent() {
@@ -353,9 +395,9 @@ this.primevue.utils = (function (exports) {
         },
 
         appendChild(element, target) {
-            if(this.isElement(target))
+            if (this.isElement(target))
                 target.appendChild(element);
-            else if(target.el && target.elElement)
+            else if (target.el && target.elElement)
                 target.elElement.appendChild(element);
             else
                 throw new Error('Cannot append ' + target + ' to ' + element);
@@ -382,14 +424,14 @@ this.primevue.utils = (function (exports) {
         },
 
         clearSelection() {
-            if(window.getSelection) {
-                if(window.getSelection().empty) {
+            if (window.getSelection) {
+                if (window.getSelection().empty) {
                     window.getSelection().empty();
-                } else if(window.getSelection().removeAllRanges && window.getSelection().rangeCount > 0 && window.getSelection().getRangeAt(0).getClientRects().length > 0) {
+                } else if (window.getSelection().removeAllRanges && window.getSelection().rangeCount > 0 && window.getSelection().getRangeAt(0).getClientRects().length > 0) {
                     window.getSelection().removeAllRanges();
                 }
             }
-            else if(document['selection'] && document['selection'].empty) {
+            else if (document['selection'] && document['selection'].empty) {
                 try {
                     document['selection'].empty();
                 } catch(error) {
@@ -399,7 +441,7 @@ this.primevue.utils = (function (exports) {
         },
 
         calculateScrollbarWidth() {
-            if(this.calculatedScrollbarWidth != null)
+            if (this.calculatedScrollbarWidth != null)
                 return this.calculatedScrollbarWidth;
 
             let scrollDiv = document.createElement("div");
@@ -415,7 +457,7 @@ this.primevue.utils = (function (exports) {
         },
 
         getBrowser() {
-            if(!this.browser) {
+            if (!this.browser) {
                 let matched = this.resolveUserAgent();
                 this.browser = {};
 
@@ -450,7 +492,7 @@ this.primevue.utils = (function (exports) {
         },
 
         isVisible(element) {
-            return element.offsetParent != null;
+            return element && element.offsetParent != null;
         },
 
         invokeElementMethod(element, methodName, args) {
@@ -461,13 +503,15 @@ this.primevue.utils = (function (exports) {
             return !!(typeof window !== 'undefined' && window.document && window.document.createElement);
         },
 
-        getFocusableElements(element) {
-            let focusableElements = this.find(element, `button:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]),
-                [href][clientHeight][clientWidth]:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]),
-                input:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]), select:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]),
-                textarea:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]), [tabIndex]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden]),
-                [contenteditable]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])`
-                );
+        getFocusableElements(element, selector = '') {
+            let focusableElements = this.find(element, `button:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [href][clientHeight][clientWidth]:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                input:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                select:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                textarea:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [tabIndex]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [contenteditable]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector}`
+            );
 
             let visibleFocusableElements = [];
             for (let focusableElement of focusableElements) {
@@ -478,8 +522,8 @@ this.primevue.utils = (function (exports) {
             return visibleFocusableElements;
         },
 
-        getFirstFocusableElement(element) {
-            const focusableElements = this.getFocusableElements(element);
+        getFirstFocusableElement(element, selector) {
+            const focusableElements = this.getFocusableElements(element, selector);
             return focusableElements.length > 0 ? focusableElements[0] : null;
         },
 
@@ -793,8 +837,11 @@ this.primevue.utils = (function (exports) {
 
         isNotEmpty(value) {
             return !this.isEmpty(value);
-        }
+        },
 
+        isPrintableCharacter(char = '') {
+            return this.isNotEmpty(char) && char.length === 1 && char.match(/\S| /);
+        }
     };
 
     function handler() {
@@ -1451,6 +1498,23 @@ this.primevue.config = (function (exports, vue, api) {
             dayNamesMin: ["Su","Mo","Tu","We","Th","Fr","Sa"],
             monthNames: ["January","February","March","April","May","June","July","August","September","October","November","December"],
             monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            chooseYear: 'Choose Year',
+            chooseMonth: 'Choose Month',
+            chooseDate: 'Choose Date',
+            prevDecade: 'Previous Decade',
+            nextDecade: 'Next Decade',
+            prevYear: 'Previous Year',
+            nextYear: 'Next Year',
+            prevMonth: 'Previous Month',
+            nextMonth: 'Next Month',
+            prevHour: 'Previous Hour',
+            nextHour: 'Next Hour',
+            prevMinute: 'Previous Minute',
+            nextMinute: 'Next Minute',
+            prevSecond: 'Previous Second',
+            nextSecond: 'Next Second',
+            am: 'am',
+            pm: 'pm',
             today: 'Today',
             weekHeader: 'Wk',
             firstDayOfWeek: 0,
@@ -1459,8 +1523,22 @@ this.primevue.config = (function (exports, vue, api) {
             medium: 'Medium',
             strong: 'Strong',
             passwordPrompt: 'Enter a password',
-            emptyFilterMessage: 'No results found',
-            emptyMessage: 'No available options'
+            emptyFilterMessage: 'No results found', // @deprecated Use 'emptySearchMessage' option instead.
+            searchMessage: '{0} results are available',
+            selectionMessage: '{0} items selected',
+            emptySelectionMessage: 'No selected item',
+            emptySearchMessage: 'No results found',
+            emptyMessage: 'No available options',
+            aria: {
+                trueLabel: 'True',
+                falseLabel: 'False',
+                nullLabel: 'Not Selected',
+                star: '1 star',
+                stars: '{star} stars',
+                selectAll: 'All items selected',
+                unselectAll: 'All items unselected',
+                close: 'Close'
+            }
         },
         filterMatchModeOptions: {
             text: [
@@ -1500,8 +1578,8 @@ this.primevue.config = (function (exports, vue, api) {
         const PrimeVue = vue.inject(PrimeVueSymbol);
         if (!PrimeVue) {
             throw new Error('PrimeVue is not installed!');
-        } 
-        
+        }
+
         return PrimeVue;
     }
 
@@ -1540,6 +1618,7 @@ this.primevue.ripple = (function (utils) {
     function create(el) {
         let ink = document.createElement('span');
         ink.className = 'p-ink';
+        ink.setAttribute("role", "presentation");
         el.appendChild(ink);
 
         ink.addEventListener('animationend', onAnimationEnd);
@@ -1622,17 +1701,12 @@ this.primevue.portal = (function (utils, vue) {
                 default: false
             }
         },
-        data() {
-            return {
-                mounted: false
-            }
-        },
-        mounted() {
-            this.mounted = utils.DomHandler.isClient();
-        },
         computed: {
             inline() {
                 return this.disabled || this.appendTo === 'self';
+            },
+            isClient() {
+                return utils.DomHandler.isClient();
             }
         }
     };
@@ -1640,7 +1714,7 @@ this.primevue.portal = (function (utils, vue) {
     function render(_ctx, _cache, $props, $setup, $data, $options) {
       return ($options.inline)
         ? vue.renderSlot(_ctx.$slots, "default", { key: 0 })
-        : ($data.mounted)
+        : ($options.isClient)
           ? (vue.openBlock(), vue.createBlock(vue.Teleport, {
               key: 1,
               to: $props.appendTo
@@ -1959,12 +2033,15 @@ this.primevue.tooltip = (function (utils) {
                 target.$_ptooltipClass = null;
                 target.$_ptooltipFitContent = true;
             }
-            else {
-                target.$_ptooltipValue = options.value.value;
-                target.$_ptooltipDisabled = options.value.disabled || false;
-                target.$_ptooltipEscape = options.value.escape || false;
-                target.$_ptooltipClass = options.value.class;
-                target.$_ptooltipFitContent = options.value.fitContent || true;
+            else if (typeof options.value === 'object' && options.value) {
+                if (options.value.value === undefined || options.value.value === null || options.value.value.trim() === '') return;
+                else {
+                    target.$_ptooltipValue = options.value.value;
+                    target.$_ptooltipDisabled = options.value.disabled || false;
+                    target.$_ptooltipEscape = options.value.escape || false;
+                    target.$_ptooltipClass = options.value.class;
+                    target.$_ptooltipFitContent = options.value.fitContent || true;
+                }
             }
 
             target.$_ptooltipZIndex = options.instance.$primevue && options.instance.$primevue.config && options.instance.$primevue.config.zIndex.tooltip;
@@ -1993,11 +2070,15 @@ this.primevue.tooltip = (function (utils) {
                 target.$_ptooltipEscape = false;
                 target.$_ptooltipClass = null;
             }
-            else {
-                target.$_ptooltipValue = options.value.value;
-                target.$_ptooltipDisabled = options.value.disabled || false;
-                target.$_ptooltipEscape = options.value.escape || false;
-                target.$_ptooltipClass = options.value.class;
+            else if (typeof options.value === 'object' && options.value) {
+                if (options.value.value === undefined || options.value.value === null || options.value.value.trim() === '') return;
+                else {
+                    target.$_ptooltipValue = options.value.value;
+                    target.$_ptooltipDisabled = options.value.disabled || false;
+                    target.$_ptooltipEscape = options.value.escape || false;
+                    target.$_ptooltipClass = options.value.class;
+                    target.$_ptooltipFitContent = options.value.fitContent || true;
+                }
             }
         }
     };
@@ -2069,6 +2150,10 @@ this.primevue.virtualscroller = (function (vue) {
             showLoader: {
                 type: Boolean,
                 default: false
+            },
+            tabindex: {
+                type: Number,
+                default: 0
             }
         },
         data() {
@@ -2133,24 +2218,20 @@ this.primevue.virtualscroller = (function (vue) {
                 const first = this.first;
                 const { numToleratedItems } = this.calculateNumItems();
                 const itemSize = this.itemSize;
-                const contentPos = this.getContentPosition();
                 const calculateFirst = (_index = 0, _numT) => (_index <= _numT ? 0 : _index);
-                const calculateCoord = (_first, _size, _cpos) => (_first * _size) + _cpos;
+                const calculateCoord = (_first, _size) => (_first * _size);
                 const scrollTo = (left = 0, top = 0) => this.scrollTo({ left, top, behavior });
 
                 if (both) {
                     const newFirst = { rows: calculateFirst(index[0], numToleratedItems[0]), cols: calculateFirst(index[1], numToleratedItems[1]) };
                     if (newFirst.rows !== first.rows || newFirst.cols !== first.cols) {
-                        scrollTo(calculateCoord(newFirst.cols, itemSize[1], contentPos.left), calculateCoord(newFirst.rows, itemSize[0], contentPos.top));
-                        this.first = newFirst;
+                        scrollTo(calculateCoord(newFirst.cols, itemSize[1]), calculateCoord(newFirst.rows, itemSize[0]));
                     }
                 }
                 else {
                     const newFirst = calculateFirst(index, numToleratedItems);
-
                     if (newFirst !== first) {
-                        horizontal ? scrollTo(calculateCoord(newFirst, itemSize, contentPos.left), 0) : scrollTo(0, calculateCoord(newFirst, itemSize, contentPos.top));
-                        this.first = newFirst;
+                        horizontal ? scrollTo(calculateCoord(newFirst, itemSize), 0) : scrollTo(0, calculateCoord(newFirst, itemSize));
                     }
                 }
             },
@@ -2381,9 +2462,10 @@ this.primevue.virtualscroller = (function (vue) {
                 const scrollTop = calculateScrollPos(target.scrollTop, contentPos.top);
                 const scrollLeft = calculateScrollPos(target.scrollLeft, contentPos.left);
 
-                let newFirst = 0;
+                let newFirst = both ? { rows: 0, cols: 0 } : 0;
                 let newLast = this.last;
                 let isRangeChanged = false;
+                let newScrollPos = this.lastScrollPos;
 
                 if (both) {
                     const isScrollDown = this.lastScrollPos.top <= scrollTop;
@@ -2403,9 +2485,8 @@ this.primevue.virtualscroller = (function (vue) {
                         cols: calculateLast(currentIndex.cols, newFirst.cols, this.last.cols, this.numItemsInViewport.cols, this.d_numToleratedItems[1], true)
                     };
 
-                    isRangeChanged = (newFirst.rows !== this.first.rows && newLast.rows !== this.last.rows) || (newFirst.cols !== this.first.cols && newLast.cols !== this.last.cols);
-
-                    this.lastScrollPos = { top: scrollTop, left: scrollLeft };
+                    isRangeChanged = (newFirst.rows !== this.first.rows || newLast.rows !== this.last.rows) || (newFirst.cols !== this.first.cols || newLast.cols !== this.last.cols);
+                    newScrollPos = { top: scrollTop, left: scrollLeft };
                 }
                 else {
                     const scrollPos = horizontal ? scrollLeft : scrollTop;
@@ -2415,19 +2496,19 @@ this.primevue.virtualscroller = (function (vue) {
 
                     newFirst = calculateFirst(currentIndex, triggerIndex, this.first, this.last, this.numItemsInViewport, this.d_numToleratedItems, isScrollDownOrRight);
                     newLast = calculateLast(currentIndex, newFirst, this.last, this.numItemsInViewport, this.d_numToleratedItems);
-                    isRangeChanged = newFirst !== this.first && newLast !== this.last;
-
-                    this.lastScrollPos = scrollPos;
+                    isRangeChanged = newFirst !== this.first || newLast !== this.last;
+                    newScrollPos = scrollPos;
                 }
 
                 return {
                     first: newFirst,
                     last: newLast,
-                    isRangeChanged
+                    isRangeChanged,
+                    scrollPos: newScrollPos
                 }
             },
             onScrollChange(event) {
-                const { first, last, isRangeChanged } = this.onScrollPositionChange(event);
+                const { first, last, isRangeChanged, scrollPos } = this.onScrollPositionChange(event);
 
                 if (isRangeChanged) {
                     const newState = { first, last };
@@ -2436,6 +2517,7 @@ this.primevue.virtualscroller = (function (vue) {
 
                     this.first = first;
                     this.last = last;
+                    this.lastScrollPos = scrollPos;
 
                     this.$emit('scroll-index-change', newState);
 
@@ -2551,7 +2633,8 @@ this.primevue.virtualscroller = (function (vue) {
         }
     };
 
-    const _hoisted_1 = {
+    const _hoisted_1 = ["tabindex"];
+    const _hoisted_2 = {
       key: 1,
       class: "p-virtualscroller-loading-icon pi pi-spinner pi-spin"
     };
@@ -2562,7 +2645,7 @@ this.primevue.virtualscroller = (function (vue) {
             key: 0,
             ref: $options.elementRef,
             class: vue.normalizeClass($options.containerClass),
-            tabindex: 0,
+            tabindex: $props.tabindex,
             style: vue.normalizeStyle($props.style),
             onScroll: _cache[0] || (_cache[0] = (...args) => ($options.onScroll && $options.onScroll(...args)))
           }, [
@@ -2615,10 +2698,10 @@ this.primevue.virtualscroller = (function (vue) {
                           options: $options.getLoaderOptions(index, $options.isBoth() && { numCols: _ctx.d_numItemsInViewport.cols })
                         })
                       }), 128))
-                    : (vue.openBlock(), vue.createElementBlock("i", _hoisted_1))
+                    : (vue.openBlock(), vue.createElementBlock("i", _hoisted_2))
                 ], 2))
               : vue.createCommentVNode("", true)
-          ], 38))
+          ], 46, _hoisted_1))
         : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
             vue.renderSlot(_ctx.$slots, "default"),
             vue.renderSlot(_ctx.$slots, "content", {
@@ -2656,7 +2739,7 @@ this.primevue.virtualscroller = (function (vue) {
       }
     }
 
-    var css_248z = "\n.p-virtualscroller {\n    position: relative;\n    overflow: auto;\n    contain: strict;\n    -webkit-transform: translateZ(0);\n            transform: translateZ(0);\n    will-change: scroll-position;\n    outline: 0 none;\n}\n.p-virtualscroller-content {\n    position: absolute;\n    top: 0;\n    left: 0;\n    contain: content;\n    min-height: 100%;\n    min-width: 100%;\n    will-change: transform;\n}\n.p-virtualscroller-spacer {\n    position: absolute;\n    top: 0;\n    left: 0;\n    height: 1px;\n    width: 1px;\n    -webkit-transform-origin: 0 0;\n            transform-origin: 0 0;\n    pointer-events: none;\n}\n.p-virtualscroller .p-virtualscroller-loader {\n    position: sticky;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n.p-virtualscroller-loader.p-component-overlay {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n";
+    var css_248z = "\n.p-virtualscroller {\r\n    position: relative;\r\n    overflow: auto;\r\n    contain: strict;\r\n    -webkit-transform: translateZ(0);\r\n            transform: translateZ(0);\r\n    will-change: scroll-position;\r\n    outline: 0 none;\n}\n.p-virtualscroller-content {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    contain: content;\r\n    min-height: 100%;\r\n    min-width: 100%;\r\n    will-change: transform;\n}\n.p-virtualscroller-spacer {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    height: 1px;\r\n    width: 1px;\r\n    -webkit-transform-origin: 0 0;\r\n            transform-origin: 0 0;\r\n    pointer-events: none;\n}\n.p-virtualscroller .p-virtualscroller-loader {\r\n    position: sticky;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\n}\n.p-virtualscroller-loader.p-component-overlay {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;
@@ -2855,6 +2938,9 @@ this.primevue.button = (function (Ripple, vue) {
             },
             disabled() {
                 return this.$attrs.disabled || this.loading;
+            },
+            defaultAriaLabel() {
+                return (this.label ? this.label + (this.badge ? ' ' + this.badge : '') : this.$attrs['aria-label']);
             }
         },
         directives: {
@@ -2862,7 +2948,7 @@ this.primevue.button = (function (Ripple, vue) {
         }
     };
 
-    const _hoisted_1 = ["disabled"];
+    const _hoisted_1 = ["aria-label", "disabled"];
     const _hoisted_2 = { class: "p-button-label" };
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -2871,6 +2957,7 @@ this.primevue.button = (function (Ripple, vue) {
       return vue.withDirectives((vue.openBlock(), vue.createElementBlock("button", {
         class: vue.normalizeClass($options.buttonClass),
         type: "button",
+        "aria-label": $options.defaultAriaLabel,
         disabled: $options.disabled
       }, [
         vue.renderSlot(_ctx.$slots, "default", {}, () => [
@@ -2911,7 +2998,6 @@ this.primevue.inputtext = (function (vue) {
 
     var script = {
         name: 'InputText',
-        inheritAttrs: false,
         emits: ['update:modelValue'],
         props: {
             modelValue: null
@@ -2931,11 +3017,11 @@ this.primevue.inputtext = (function (vue) {
     const _hoisted_1 = ["value"];
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
-      return (vue.openBlock(), vue.createElementBlock("input", vue.mergeProps({
-        class: ['p-inputtext p-component', {'p-filled': $options.filled}],
+      return (vue.openBlock(), vue.createElementBlock("input", {
+        class: vue.normalizeClass(['p-inputtext p-component', {'p-filled': $options.filled}]),
         value: $props.modelValue,
         onInput: _cache[0] || (_cache[0] = (...args) => ($options.onInput && $options.onInput(...args)))
-      }, _ctx.$attrs), null, 16, _hoisted_1))
+      }, null, 42, _hoisted_1))
     }
 
     script.render = render;
@@ -2955,7 +3041,6 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
 
     var script = {
         name: 'InputNumber',
-        inheritAttrs: false,
         emits: ['update:modelValue', 'input', 'focus', 'blur'],
         props: {
             modelValue: {
@@ -3050,10 +3135,24 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
                 type: Boolean,
                 default: false
             },
-            style: null,
-            class: null,
+            disabled: {
+                type: Boolean,
+                default: false
+            },
+            inputId: null,
+            inputClass: null,
             inputStyle: null,
-            inputClass: null
+            inputProps: null,
+            incrementButtonProps: null,
+            decrementButtonProps: null,
+            'aria-labelledby': {
+                type: String,
+    			default: null
+            },
+            'aria-label': {
+                type: String,
+                default: null
+            }
         },
         numberFormat: null,
         _numeral: null,
@@ -3265,24 +3364,24 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
                 }
             },
             onUpButtonMouseDown(event) {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.$refs.input.$el.focus();
                     this.repeat(event, null, 1);
                     event.preventDefault();
                 }
             },
             onUpButtonMouseUp() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
             onUpButtonMouseLeave() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
             onUpButtonKeyUp() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
@@ -3292,24 +3391,24 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
                 }
             },
             onDownButtonMouseDown(event) {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.$refs.input.$el.focus();
                     this.repeat(event, null, -1);
                     event.preventDefault();
                 }
             },
             onDownButtonMouseUp() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
             onDownButtonMouseLeave() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
             onDownButtonKeyUp() {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     this.clearTimer();
                 }
             },
@@ -3471,6 +3570,22 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
                         else {
                             newValueStr = this.deleteRange(inputValue, selectionStart, selectionEnd);
                             this.updateValue(event, newValueStr, null, 'delete-range');
+                        }
+                    break;
+
+                    //home
+                    case 36:
+                        if (this.min) {
+                            this.updateModel(event, this.min);
+                            event.preventDefault();
+                        }
+                    break;
+
+                    //end
+                    case 35:
+                        if (this.max) {
+                            this.updateModel(event, this.max);
+                            event.preventDefault();
                         }
                     break;
                 }
@@ -3882,7 +3997,7 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
         },
         computed: {
             containerClass() {
-                return ['p-inputnumber p-component p-inputwrapper', this.class, {
+                return ['p-inputnumber p-component p-inputwrapper', {
                     'p-inputwrapper-filled': this.filled,
                     'p-inputwrapper-focus': this.focused,
                     'p-inputnumber-buttons-stacked': this.showButtons && this.buttonLayout === 'stacked',
@@ -3892,7 +4007,7 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
             },
             
             upButtonClass() {
-                return ['p-inputnumber-button p-inputnumber-button-up', this.incrementButtonClass, {
+                return ['p-inputnumber-button p-inputnumber-button-up', {
                     'p-disabled': this.showButtons && this.max !== null && this.maxBoundry()
                 }];
             },
@@ -3946,18 +4061,21 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
       const _component_INButton = vue.resolveComponent("INButton");
 
       return (vue.openBlock(), vue.createElementBlock("span", {
-        class: vue.normalizeClass($options.containerClass),
-        style: vue.normalizeStyle($props.style)
+        class: vue.normalizeClass($options.containerClass)
       }, [
         vue.createVNode(_component_INInputText, vue.mergeProps({
           ref: "input",
-          class: ['p-inputnumber-input', $props.inputClass],
+          class: ["p-inputnumber-input", $props.inputClass],
+          role: "spinbutton",
+          id: $props.inputId,
           style: $props.inputStyle,
-          value: $options.formattedValue
-        }, _ctx.$attrs, {
-          "aria-valumin": $props.min,
+          value: $options.formattedValue,
+          "aria-valuemin": $props.min,
           "aria-valuemax": $props.max,
+          "aria-valuenow": $props.modelValue,
           readonly: $props.readonly,
+          "aria-labelledby": _ctx.ariaLabelledby,
+          "aria-label": _ctx.ariaLabel,
           onInput: $options.onUserInput,
           onKeydown: $options.onInputKeyDown,
           onKeypress: $options.onInputKeyPress,
@@ -3965,21 +4083,23 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
           onClick: $options.onInputClick,
           onFocus: $options.onInputFocus,
           onBlur: $options.onInputBlur
-        }), null, 16, ["class", "style", "value", "aria-valumin", "aria-valuemax", "readonly", "onInput", "onKeydown", "onKeypress", "onPaste", "onClick", "onFocus", "onBlur"]),
+        }, $props.inputProps), null, 16, ["id", "class", "style", "value", "aria-valuemin", "aria-valuemax", "aria-valuenow", "readonly", "aria-labelledby", "aria-label", "onInput", "onKeydown", "onKeypress", "onPaste", "onClick", "onFocus", "onBlur"]),
         ($props.showButtons && $props.buttonLayout === 'stacked')
           ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_1, [
               vue.createVNode(_component_INButton, vue.mergeProps({
                 class: $options.upButtonClass,
                 icon: $props.incrementButtonIcon
               }, vue.toHandlers($options.upButtonListeners), {
-                disabled: _ctx.$attrs.disabled
-              }), null, 16, ["class", "icon", "disabled"]),
+                disabled: $props.disabled,
+                tabindex: -1
+              }, $props.incrementButtonProps), null, 16, ["class", "icon", "disabled"]),
               vue.createVNode(_component_INButton, vue.mergeProps({
                 class: $options.downButtonClass,
                 icon: $props.decrementButtonIcon
               }, vue.toHandlers($options.downButtonListeners), {
-                disabled: _ctx.$attrs.disabled
-              }), null, 16, ["class", "icon", "disabled"])
+                disabled: $props.disabled,
+                tabindex: -1
+              }, $props.decrementButtonProps), null, 16, ["class", "icon", "disabled"])
             ]))
           : vue.createCommentVNode("", true),
         ($props.showButtons && $props.buttonLayout !== 'stacked')
@@ -3988,8 +4108,9 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
               class: $options.upButtonClass,
               icon: $props.incrementButtonIcon
             }, vue.toHandlers($options.upButtonListeners), {
-              disabled: _ctx.$attrs.disabled
-            }), null, 16, ["class", "icon", "disabled"]))
+              disabled: $props.disabled,
+              tabindex: -1
+            }, $props.incrementButtonProps), null, 16, ["class", "icon", "disabled"]))
           : vue.createCommentVNode("", true),
         ($props.showButtons && $props.buttonLayout !== 'stacked')
           ? (vue.openBlock(), vue.createBlock(_component_INButton, vue.mergeProps({
@@ -3997,10 +4118,11 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
               class: $options.downButtonClass,
               icon: $props.decrementButtonIcon
             }, vue.toHandlers($options.downButtonListeners), {
-              disabled: _ctx.$attrs.disabled
-            }), null, 16, ["class", "icon", "disabled"]))
+              disabled: $props.disabled,
+              tabindex: -1
+            }, $props.decrementButtonProps), null, 16, ["class", "icon", "disabled"]))
           : vue.createCommentVNode("", true)
-      ], 6))
+      ], 2))
     }
 
     function styleInject(css, ref) {
@@ -4030,7 +4152,7 @@ this.primevue.inputnumber = (function (InputText, Button, vue) {
       }
     }
 
-    var css_248z = "\n.p-inputnumber {\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n}\n.p-inputnumber-button {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-flex: 0;\n        -ms-flex: 0 0 auto;\n            flex: 0 0 auto;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button .p-button-label,\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button .p-button-label {\n    display: none;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up {\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-input {\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n    border-bottom-left-radius: 0;\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group .p-button.p-inputnumber-button {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {\n    -webkit-box-ordinal-group: 4;\n        -ms-flex-order: 3;\n            order: 3;\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-inputnumber-input {\n    -webkit-box-ordinal-group: 3;\n        -ms-flex-order: 2;\n            order: 2;\n    border-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {\n    -webkit-box-ordinal-group: 2;\n        -ms-flex-order: 1;\n            order: 1;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-vertical {\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-up {\n    -webkit-box-ordinal-group: 2;\n        -ms-flex-order: 1;\n            order: 1;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    width: 100%;\n}\n.p-inputnumber-buttons-vertical .p-inputnumber-input {\n    -webkit-box-ordinal-group: 3;\n        -ms-flex-order: 2;\n            order: 2;\n    border-radius: 0;\n    text-align: center;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-down {\n    -webkit-box-ordinal-group: 4;\n        -ms-flex-order: 3;\n            order: 3;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n    width: 100%;\n}\n.p-inputnumber-input {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n}\n.p-fluid .p-inputnumber {\n    width: 100%;\n}\n.p-fluid .p-inputnumber .p-inputnumber-input {\n    width: 1%;\n}\n.p-fluid .p-inputnumber-buttons-vertical .p-inputnumber-input {\n    width: 100%;\n}\n";
+    var css_248z = "\n.p-inputnumber {\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\n}\n.p-inputnumber-button {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -webkit-box-flex: 0;\r\n        -ms-flex: 0 0 auto;\r\n            flex: 0 0 auto;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button .p-button-label,\r\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button .p-button-label {\r\n    display: none;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up {\r\n    border-top-left-radius: 0;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-input {\r\n    border-top-right-radius: 0;\r\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n    border-bottom-left-radius: 0;\r\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group .p-button.p-inputnumber-button {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {\r\n    -webkit-box-ordinal-group: 4;\r\n        -ms-flex-order: 3;\r\n            order: 3;\r\n    border-top-left-radius: 0;\r\n    border-bottom-left-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-inputnumber-input {\r\n    -webkit-box-ordinal-group: 3;\r\n        -ms-flex-order: 2;\r\n            order: 2;\r\n    border-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {\r\n    -webkit-box-ordinal-group: 2;\r\n        -ms-flex-order: 1;\r\n            order: 1;\r\n    border-top-right-radius: 0;\r\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-vertical {\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-up {\r\n    -webkit-box-ordinal-group: 2;\r\n        -ms-flex-order: 1;\r\n            order: 1;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n    width: 100%;\n}\n.p-inputnumber-buttons-vertical .p-inputnumber-input {\r\n    -webkit-box-ordinal-group: 3;\r\n        -ms-flex-order: 2;\r\n            order: 2;\r\n    border-radius: 0;\r\n    text-align: center;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-down {\r\n    -webkit-box-ordinal-group: 4;\r\n        -ms-flex-order: 3;\r\n            order: 3;\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n    width: 100%;\n}\n.p-inputnumber-input {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\n}\n.p-fluid .p-inputnumber {\r\n    width: 100%;\n}\n.p-fluid .p-inputnumber .p-inputnumber-input {\r\n    width: 1%;\n}\n.p-fluid .p-inputnumber-buttons-vertical .p-inputnumber-input {\r\n    width: 100%;\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;
@@ -4327,7 +4449,7 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
 
     var script = {
         name: 'Dropdown',
-        emits: ['update:modelValue', 'before-show', 'before-hide', 'show', 'hide', 'change', 'filter', 'focus', 'blur'],
+        emits: ['update:modelValue', 'change', 'focus', 'blur', 'before-show', 'before-hide', 'show', 'hide', 'filter'],
         props: {
             modelValue: null,
             options: Array,
@@ -4357,21 +4479,18 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
             dataKey: null,
             showClear: Boolean,
             inputId: String,
-            tabindex: String,
-            ariaLabelledBy: null,
+            inputStyle: null,
+            inputClass: null,
+            inputProps: null,
+            panelStyle: null,
+            panelClass: null,
+            panelProps: null,
+            filterInputProps: null,
+            clearIconProps: null,
             appendTo: {
                 type: String,
                 default: 'body'
             },
-            emptyFilterMessage: {
-                type: String,
-                default: null
-            },
-            emptyMessage: {
-                type: String,
-                default: null
-            },
-            panelClass: null,
             loading: {
                 type: Boolean,
                 default: false
@@ -4383,34 +4502,80 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
             virtualScrollerOptions: {
                 type: Object,
                 default: null
-            }
-        },
-        data() {
-            return {
-                focused: false,
-                filterValue: null,
-                overlayVisible: false
-            };
-        },
-        watch: {
-            modelValue() {
-                this.isModelValueChanged = true;
+            },
+            autoOptionFocus: {
+                type: Boolean,
+                default: true
+            },
+            filterMessage: {
+                type: String,
+                default: null
+            },
+            selectionMessage: {
+                type: String,
+                default: null
+            },
+            emptySelectionMessage: {
+                type: String,
+                default: null
+            },
+            emptyFilterMessage: {
+                type: String,
+                default: null
+            },
+            emptyMessage: {
+                type: String,
+                default: null
+            },
+            tabindex: {
+                type: Number,
+                default: 0
+            },
+            ariaLabel: {
+                type: String,
+                default: null
+            },
+            ariaLabelledby: {
+                type: String,
+                default: null
             }
         },
         outsideClickListener: null,
         scrollHandler: null,
         resizeListener: null,
-        searchTimeout: null,
-        currentSearchChar: null,
-        previousSearchChar: null,
-        searchValue: null,
         overlay: null,
-        itemsWrapper: null,
+        list: null,
         virtualScroller: null,
+        searchTimeout: null,
+        searchValue: null,
         isModelValueChanged: false,
+        selectOnFocus: false,
+        focusOnHover: false,
+        data() {
+            return {
+                id: utils.UniqueComponentId(),
+                focused: false,
+                focusedOptionIndex: -1,
+                filterValue: null,
+                overlayVisible: false
+            }
+        },
+        watch: {
+            modelValue() {
+                this.isModelValueChanged = true;
+            },
+            options() {
+                this.autoUpdateModel();
+            }
+        },
+        mounted() {
+            this.id = this.$attrs.id || this.id;
+
+            this.autoUpdateModel();
+        },
         updated() {
             if (this.overlayVisible && this.isModelValueChanged) {
-                this.scrollValueInView();
+                this.scrollInView(this.findSelectedOptionIndex());
             }
 
             this.isModelValueChanged = false;
@@ -4423,8 +4588,6 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                 this.scrollHandler.destroy();
                 this.scrollHandler = null;
             }
-
-            this.itemsWrapper = null;
 
             if (this.overlay) {
                 utils.ZIndexUtils.clear(this.overlay);
@@ -4442,13 +4605,10 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                 return this.optionValue ? utils.ObjectUtils.resolveFieldData(option, this.optionValue) : option;
             },
             getOptionRenderKey(option, index) {
-                return this.dataKey ? utils.ObjectUtils.resolveFieldData(option, this.dataKey) : this.getOptionLabel(option) + '_' + index.toString();
+                return (this.dataKey ? utils.ObjectUtils.resolveFieldData(option, this.dataKey) : this.getOptionLabel(option)) + '_' + index;
             },
             isOptionDisabled(option) {
                 return this.optionDisabled ? utils.ObjectUtils.resolveFieldData(option, this.optionDisabled) : false;
-            },
-            getOptionGroupRenderKey(optionGroup) {
-                return utils.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupLabel);
             },
             getOptionGroupLabel(optionGroup) {
                 return utils.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupLabel);
@@ -4456,207 +4616,115 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
             getOptionGroupChildren(optionGroup) {
                 return utils.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupChildren);
             },
-            getSelectedOption() {
-                let index = this.getSelectedOptionIndex();
-                return index !== -1 ? (this.optionGroupLabel ? this.getOptionGroupChildren(this.visibleOptions[index.group])[index.option]: this.visibleOptions[index]) : null;
-            },
-            getSelectedOptionIndex() {
-                if (this.modelValue != null && this.visibleOptions) {
-                    if (this.optionGroupLabel) {
-                        for (let i = 0; i < this.visibleOptions.length; i++) {
-                            let selectedOptionIndex = this.findOptionIndexInList(this.modelValue, this.getOptionGroupChildren(this.visibleOptions[i]));
-                            if (selectedOptionIndex !== -1) {
-                                return {group: i, option: selectedOptionIndex};
-                            }
-                        }
-                    }
-                    else {
-                        return this.findOptionIndexInList(this.modelValue, this.visibleOptions);
-                    }
-                }
-
-                return -1;
-            },
-            findOptionIndexInList(value, list) {
-                for (let i = 0; i < list.length; i++) {
-                    if ((utils.ObjectUtils.equals(value, this.getOptionValue(list[i]), this.equalityKey))) {
-                        return i;
-                    }
-                }
-
-                return -1;
-            },
-            isSelected(option) {
-                return utils.ObjectUtils.equals(this.modelValue, this.getOptionValue(option), this.equalityKey);
+            getAriaPosInset(index) {
+                return (this.optionGroupLabel ? index - this.visibleOptions.slice(0, index).filter(option => this.isOptionGroup(option)).length : index) + 1;
             },
             show(isFocus) {
                 this.$emit('before-show');
                 this.overlayVisible = true;
+                this.focusedOptionIndex = this.focusedOptionIndex !== -1 ? this.focusedOptionIndex : (this.autoOptionFocus ? this.findFirstFocusedOptionIndex() : -1);
 
                 isFocus && this.$refs.focusInput.focus();
             },
-            hide() {
-                this.$emit('before-hide');
-                this.overlayVisible = false;
+            hide(isFocus) {
+                const _hide = () => {
+                    this.$emit('before-hide');
+                    this.overlayVisible = false;
+                    this.focusedOptionIndex = -1;
+                    this.searchValue = '';
+
+                    isFocus && this.$refs.focusInput.focus();
+                };
+
+                setTimeout(() => { _hide(); }, 0); // For ScreenReaders
             },
             onFocus(event) {
                 this.focused = true;
+                this.focusedOptionIndex = this.overlayVisible && this.autoOptionFocus ? this.findFirstFocusedOptionIndex() : -1;
+                this.overlayVisible && this.scrollInView(this.focusedOptionIndex);
                 this.$emit('focus', event);
             },
             onBlur(event) {
                 this.focused = false;
+                this.focusedOptionIndex = -1;
+                this.searchValue = '';
                 this.$emit('blur', event);
             },
             onKeyDown(event) {
-                switch(event.which) {
-                    //down
-                    case 40:
-                        this.onDownKey(event);
-                    break;
+                switch (event.code) {
+                    case 'ArrowDown':
+                        this.onArrowDownKey(event);
+                        break;
 
-                    //up
-                    case 38:
-                        this.onUpKey(event);
-                    break;
+                    case 'ArrowUp':
+                        this.onArrowUpKey(event, this.editable);
+                        break;
 
-                    //space
-                    case 32:
-                        if (!this.overlayVisible) {
-                            this.show();
-                            event.preventDefault();
-                        }
-                    break;
+                    case 'ArrowLeft':
+                    case 'ArrowRight':
+                        this.onArrowLeftKey(event, this.editable);
+                        break;
 
-                    //enter and escape
-                    case 13:
-                    case 27:
-                        if (this.overlayVisible) {
-                            this.hide();
-                            event.preventDefault();
-                        }
-                    break;
+                    case 'Home':
+                        this.onHomeKey(event, this.editable);
+                        break;
 
-                    //tab
-                    case 9:
-                        this.hide();
-                    break;
+                    case 'End':
+                        this.onEndKey(event, this.editable);
+                        break;
+
+                    case 'PageDown':
+                        this.onPageDownKey(event);
+                        break;
+
+                    case 'PageUp':
+                        this.onPageUpKey(event);
+                        break;
+
+                    case 'Space':
+                        this.onSpaceKey(event, this.editable);
+                        break;
+
+                    case 'Enter':
+                        this.onEnterKey(event);
+                        break;
+
+                    case 'Escape':
+                        this.onEscapeKey(event);
+                        break;
+
+                    case 'Tab':
+                        this.onTabKey(event);
+                        break;
+
+                    case 'Backspace':
+                        this.onBackspaceKey(event, this.editable);
+                        break;
+
+                    case 'ShiftLeft':
+                    case 'ShiftRight':
+                        //NOOP
+                        break;
 
                     default:
-                        this.search(event);
-                    break;
-                }
-            },
-            onFilterKeyDown(event) {
-                switch (event.which) {
-                    //down
-                    case 40:
-                        this.onDownKey(event);
-                        break;
-
-                    //up
-                    case 38:
-                        this.onUpKey(event);
-                        break;
-
-                    //enter and escape
-                    case 13:
-                    case 27:
-                        this.overlayVisible = false;
-                        event.preventDefault();
-                    break;
-                }
-            },
-            onDownKey(event) {
-                if (this.visibleOptions) {
-                    if (!this.overlayVisible && event.altKey) {
-                        this.show();
-                    }
-                    else {
-                        let nextOption = this.visibleOptions && this.visibleOptions.length > 0 ? this.findNextOption(this.getSelectedOptionIndex()) : null;
-                        if (nextOption) {
-                            this.updateModel(event, this.getOptionValue(nextOption));
+                        if (utils.ObjectUtils.isPrintableCharacter(event.key)) {
+                            !this.overlayVisible && this.show();
+                            !this.editable && this.searchOptions(event, event.key);
                         }
-                    }
-                }
 
-                event.preventDefault();
-            },
-            onUpKey(event) {
-                if (this.visibleOptions) {
-                    let prevOption = this.findPrevOption(this.getSelectedOptionIndex());
-                    if (prevOption) {
-                        this.updateModel(event, this.getOptionValue(prevOption));
-                    }
-                }
-
-                event.preventDefault();
-            },
-            findNextOption(index) {
-                if (this.optionGroupLabel) {
-                    let groupIndex = index === -1 ? 0 : index.group;
-                    let optionIndex = index === -1 ? -1 : index.option;
-                    let option = this.findNextOptionInList(this.getOptionGroupChildren(this.visibleOptions[groupIndex]), optionIndex);
-
-                    if (option)
-                        return option;
-                    else if ((groupIndex + 1) !== this.visibleOptions.length)
-                        return this.findNextOption({group: (groupIndex + 1), option: -1});
-                    else
-                        return null;
-                }
-                else {
-                    return this.findNextOptionInList(this.visibleOptions, index);
+                        break;
                 }
             },
-            findNextOptionInList(list, index) {
-                    let i = index + 1;
-                    if (i === list.length) {
-                        return null;
-                    }
+            onEditableInput(event) {
+                const value = event.target.value;
 
-                    let option = list[i];
-                    if (this.isOptionDisabled(option))
-                        return this.findNextOptionInList(i);
-                    else
-                        return option;
-            },
-            findPrevOption(index) {
-                if (index === -1) {
-                    return null;
-                }
+                this.searchValue = '';
+                const matched = this.searchOptions(event, value);
+                !matched && (this.focusedOptionIndex = -1);
 
-                if (this.optionGroupLabel) {
-                    let groupIndex = index.group;
-                    let optionIndex = index.option;
-                    let option = this.findPrevOptionInList(this.getOptionGroupChildren(this.visibleOptions[groupIndex]), optionIndex);
-
-                    if (option)
-                        return option;
-                    else if (groupIndex > 0)
-                        return this.findPrevOption({group: (groupIndex - 1), option: this.getOptionGroupChildren(this.visibleOptions[groupIndex - 1]).length});
-                    else
-                        return null;
-                }
-                else {
-                    return this.findPrevOptionInList(this.visibleOptions, index);
-                }
+                this.$emit('update:modelValue', value);
             },
-            findPrevOptionInList(list, index) {
-                let i = index - 1;
-                if (i < 0) {
-                    return null;
-                }
-
-                let option = list[i];
-                if (this.isOptionDisabled(option))
-                    return this.findPrevOption(i);
-                else
-                    return option;
-            },
-            onClearClick(event) {
-                this.updateModel(event, null);
-            },
-            onClick(event) {
+            onContainerClick(event) {
                 if (this.disabled || this.loading) {
                     return;
                 }
@@ -4665,45 +4733,225 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                     return;
                 }
                 else if (!this.overlay || !this.overlay.contains(event.target)) {
-                    if (this.overlayVisible)
-                        this.hide();
-                    else
-                        this.show();
-
+                    this.overlayVisible ? this.hide() : this.show();
                     this.$refs.focusInput.focus();
                 }
             },
+            onClearClick(event) {
+                this.updateModel(event, null);
+            },
+            onFirstHiddenFocus(event) {
+                const relatedTarget = event.relatedTarget;
+
+                if (relatedTarget === this.$refs.focusInput) {
+                    const firstFocusableEl = utils.DomHandler.getFirstFocusableElement(this.overlay, ':not(.p-hidden-focusable)');
+                    firstFocusableEl && firstFocusableEl.focus();
+                }
+                else {
+                    this.$refs.focusInput.focus();
+                }
+            },
+            onLastHiddenFocus() {
+                this.$refs.firstHiddenFocusableElementOnOverlay.focus();
+            },
             onOptionSelect(event, option) {
-                let value = this.getOptionValue(option);
+                const value = this.getOptionValue(option);
                 this.updateModel(event, value);
                 this.$refs.focusInput.focus();
 
-                setTimeout(() => {
-                    this.hide();
-                }, 200);
+                this.hide();
             },
-            onEditableInput(event) {
-                this.$emit('update:modelValue', event.target.value);
+            onOptionMouseMove(event, index) {
+                if (this.focusOnHover) {
+                    this.changeFocusedOptionIndex(event, index);
+                }
+            },
+            onFilterChange(event) {
+                const value = event.target.value;
+
+                this.filterValue = value;
+                this.focusedOptionIndex = -1;
+                this.$emit('filter', { originalEvent: event, value });
+
+                !this.virtualScrollerDisabled && this.virtualScroller.scrollToIndex(0);
+            },
+            onFilterKeyDown(event) {
+                switch (event.code) {
+                    case 'ArrowDown':
+                        this.onArrowDownKey(event);
+                        break;
+
+                    case 'ArrowUp':
+                        this.onArrowUpKey(event, true);
+                        break;
+
+                    case 'ArrowLeft':
+                    case 'ArrowRight':
+                        this.onArrowLeftKey(event, true);
+                        break;
+
+                    case 'Home':
+                        this.onHomeKey(event, true);
+                        break;
+
+                    case 'End':
+                        this.onEndKey(event, true);
+                        break;
+
+                    case 'Enter':
+                        this.onEnterKey(event);
+                        break;
+
+                    case 'Escape':
+                        this.onEscapeKey(event);
+                        break;
+
+                    case 'Tab':
+                        this.onTabKey(event, true);
+                        break;
+                }
+            },
+            onFilterBlur() {
+                this.focusedOptionIndex = -1;
+            },
+            onFilterUpdated() {
+                if (this.overlayVisible) {
+                    this.alignOverlay();
+                }
+            },
+            onOverlayClick(event) {
+                OverlayEventBus__default["default"].emit('overlay-click', {
+                    originalEvent: event,
+                    target: this.$el
+                });
+            },
+            onArrowDownKey(event) {
+                let optionIndex = -1;
+
+                if (this.focusedOptionIndex !== -1) {
+                    optionIndex = this.findNextOptionIndex(this.focusedOptionIndex);
+                }
+                else {
+                    optionIndex = this.findFirstFocusedOptionIndex();
+                }
+
+                this.changeFocusedOptionIndex(event, optionIndex);
+
+                !this.overlayVisible && this.show();
+                event.preventDefault();
+            },
+            onArrowUpKey(event, pressedInInputText = false) {
+                if (event.altKey && !pressedInInputText) {
+                    if (this.focusedOptionIndex !== -1) {
+                        this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+                    }
+
+                    this.overlayVisible && this.hide();
+                    event.preventDefault();
+                }
+                else {
+                    let optionIndex = -1;
+
+                    if (this.focusedOptionIndex !== -1) {
+                        optionIndex = this.findPrevOptionIndex(this.focusedOptionIndex);
+                    }
+                    else {
+                        optionIndex = this.findLastFocusedOptionIndex();
+                    }
+
+                    this.changeFocusedOptionIndex(event, optionIndex);
+
+                    !this.overlayVisible && this.show();
+                    event.preventDefault();
+                }
+            },
+            onArrowLeftKey(event, pressedInInputText = false) {
+                pressedInInputText && (this.focusedOptionIndex = -1);
+            },
+            onHomeKey(event, pressedInInputText = false) {
+                if (pressedInInputText) {
+                    event.currentTarget.setSelectionRange(0, 0);
+                    this.focusedOptionIndex = -1;
+                }
+                else {
+                    this.changeFocusedOptionIndex(event, this.findFirstOptionIndex());
+
+                    !this.overlayVisible && this.show();
+                }
+
+                event.preventDefault();
+            },
+            onEndKey(event, pressedInInputText = false) {
+                if (pressedInInputText) {
+                    const target = event.currentTarget;
+                    const len = target.value.length;
+                    target.setSelectionRange(len, len);
+                    this.focusedOptionIndex = -1;
+                }
+                else {
+                    this.changeFocusedOptionIndex(event, this.findLastOptionIndex());
+
+                    !this.overlayVisible && this.show();
+                }
+
+                event.preventDefault();
+            },
+            onPageUpKey(event) {
+                this.scrollInView(0);
+                event.preventDefault();
+            },
+            onPageDownKey(event) {
+                this.scrollInView(this.visibleOptions.length - 1);
+                event.preventDefault();
+            },
+            onEnterKey(event) {
+                if (!this.overlayVisible) {
+                    this.onArrowDownKey(event);
+                }
+                else {
+                    if (this.focusedOptionIndex !== -1) {
+                        this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+                    }
+
+                    this.hide();
+                }
+
+                event.preventDefault();
+            },
+            onSpaceKey(event, pressedInInputText = false) {
+                !pressedInInputText && this.onEnterKey(event);
+            },
+            onEscapeKey(event) {
+                this.overlayVisible && this.hide(true);
+                event.preventDefault();
+            },
+            onTabKey(event, pressedInInputText = false) {
+                if (!pressedInInputText) {
+                    if (this.overlayVisible && this.hasFocusableElements()) {
+                        this.$refs.firstHiddenFocusableElementOnOverlay.focus();
+
+                        event.preventDefault();
+                    }
+                    else {
+                        if (this.focusedOptionIndex !== -1) {
+                            this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+                        }
+
+                        this.overlayVisible && this.hide(this.filter);
+                    }
+                }
+            },
+            onBackspaceKey(event, pressedInInputText = false) {
+                if (pressedInInputText) {
+                    !this.overlayVisible && this.show();
+                }
             },
             onOverlayEnter(el) {
                 utils.ZIndexUtils.set('overlay', el, this.$primevue.config.zIndex.overlay);
                 this.alignOverlay();
-                this.scrollValueInView();
-
-                if (!this.virtualScrollerDisabled) {
-                    const selectedIndex = this.getSelectedOptionIndex();
-                    if (selectedIndex !== -1) {
-                        setTimeout(() => {
-                            this.virtualScroller && this.virtualScroller.scrollToIndex(selectedIndex);
-                        }, 0);
-                    }
-                }
+                this.scrollInView();
             },
             onOverlayAfterEnter() {
-                if (this.filter) {
-                    this.$refs.filterInput.focus();
-                }
-
                 this.bindOutsideClickListener();
                 this.bindScrollListener();
                 this.bindResizeListener();
@@ -4715,7 +4963,6 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                 this.unbindScrollListener();
                 this.unbindResizeListener();
                 this.$emit('hide');
-                this.itemsWrapper = null;
                 this.overlay = null;
             },
             onOverlayAfterLeave(el) {
@@ -4729,10 +4976,6 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                     this.overlay.style.minWidth = utils.DomHandler.getOuterWidth(this.$el) + 'px';
                     utils.DomHandler.absolutePosition(this.overlay, this.$el);
                 }
-            },
-            updateModel(event, value) {
-                this.$emit('update:modelValue', value);
-                this.$emit('change', {originalEvent: event, value: value});
             },
             bindOutsideClickListener() {
                 if (!this.outsideClickListener) {
@@ -4782,162 +5025,146 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                     this.resizeListener = null;
                 }
             },
-            search(event) {
-                if (!this.visibleOptions) {
-                    return;
+            hasFocusableElements() {
+                return utils.DomHandler.getFocusableElements(this.overlay, ':not(.p-hidden-focusable)').length > 0;
+            },
+            isOptionGroup(option) {
+                return this.optionGroupLabel && option.optionGroup && option.group;
+            },
+            isOptionMatched(option) {
+                return this.isValidOption(option) && this.getOptionLabel(option).toLocaleLowerCase(this.filterLocale).startsWith(this.searchValue.toLocaleLowerCase(this.filterLocale));
+            },
+            isValidOption(option) {
+                return option && !(this.isOptionDisabled(option) || option.optionGroup);
+            },
+            isValidSelectedOption(option) {
+                return this.isValidOption(option) && this.isSelected(option);
+            },
+            isSelected(option) {
+                return utils.ObjectUtils.equals(this.modelValue, this.getOptionValue(option), this.equalityKey);
+            },
+            findFirstOptionIndex() {
+                return this.visibleOptions.findIndex(option => this.isValidOption(option));
+            },
+            findLastOptionIndex() {
+                return this.visibleOptions.findLastIndex(option => this.isValidOption(option));
+            },
+            findNextOptionIndex(index) {
+                const matchedOptionIndex = index < (this.visibleOptions.length - 1) ? this.visibleOptions.slice(index + 1).findIndex(option => this.isValidOption(option)) : -1;
+                return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : index;
+            },
+            findPrevOptionIndex(index) {
+                const matchedOptionIndex = index > 0 ? this.visibleOptions.slice(0, index).findLastIndex(option => this.isValidOption(option)) : -1;
+                return matchedOptionIndex > -1 ? matchedOptionIndex : index;
+            },
+            findSelectedOptionIndex() {
+                return this.hasSelectedOption ? this.visibleOptions.findIndex(option => this.isValidSelectedOption(option)) : -1;
+            },
+            findFirstFocusedOptionIndex() {
+                const selectedIndex = this.findSelectedOptionIndex();
+                return selectedIndex < 0 ? this.findFirstOptionIndex() : selectedIndex;
+            },
+            findLastFocusedOptionIndex() {
+                const selectedIndex = this.findSelectedOptionIndex();
+                return selectedIndex < 0 ? this.findLastOptionIndex() : selectedIndex;
+            },
+            searchOptions(event, char) {
+                this.searchValue = (this.searchValue || '') + char;
+
+                let optionIndex = -1;
+                let matched = false;
+
+                if (this.focusedOptionIndex !== -1) {
+                    optionIndex = this.visibleOptions.slice(this.focusedOptionIndex).findIndex(option => this.isOptionMatched(option));
+                    optionIndex = optionIndex === -1 ? this.visibleOptions.slice(0, this.focusedOptionIndex).findIndex(option => this.isOptionMatched(option)) : optionIndex + this.focusedOptionIndex;
+                }
+                else {
+                    optionIndex = this.visibleOptions.findIndex(option => this.isOptionMatched(option));
+                }
+
+                if (optionIndex !== -1) {
+                    matched = true;
+                }
+
+                if (optionIndex === -1 && this.focusedOptionIndex === -1) {
+                    optionIndex = this.findFirstFocusedOptionIndex();
+                }
+
+                if (optionIndex !== -1) {
+                    this.changeFocusedOptionIndex(event, optionIndex);
                 }
 
                 if (this.searchTimeout) {
                     clearTimeout(this.searchTimeout);
                 }
 
-                const char = event.key;
-                this.previousSearchChar = this.currentSearchChar;
-                this.currentSearchChar = char;
-
-                if (this.previousSearchChar === this.currentSearchChar)
-                    this.searchValue = this.currentSearchChar;
-                else
-                    this.searchValue = this.searchValue ? this.searchValue + char : char;
-
-                if (this.searchValue) {
-                    let searchIndex = this.getSelectedOptionIndex();
-                    let newOption = this.optionGroupLabel ? this.searchOptionInGroup(searchIndex) : this.searchOption(++searchIndex);
-                    if (newOption) {
-                        this.updateModel(event, this.getOptionValue(newOption));
-                    }
-                }
-
                 this.searchTimeout = setTimeout(() => {
-                    this.searchValue = null;
-                }, 250);
+                    this.searchValue = '';
+                    this.searchTimeout = null;
+                }, 500);
+
+                return matched;
             },
-            searchOption(index) {
-                let option;
+            changeFocusedOptionIndex(event, index) {
+                if (this.focusedOptionIndex !== index) {
+                    this.focusedOptionIndex = index;
+                    this.scrollInView();
 
-                if (this.searchValue) {
-                    option = this.searchOptionInRange(index, this.visibleOptions.length);
-
-                    if (!option) {
-                        option = this.searchOptionInRange(0, index);
+                    if (this.selectOnFocus) {
+                        this.updateModel(event, this.getOptionValue(this.visibleOptions[index]));
                     }
                 }
-
-                return option;
             },
-            searchOptionInRange(start, end) {
-                for (let i = start; i < end; i++) {
-                    let opt = this.visibleOptions[i];
-                    if (this.matchesSearchValue(opt)) {
-                        return opt;
-                    }
+            scrollInView(index = -1) {
+                const id = index !== -1 ? `${this.id}_${index}` : this.focusedOptionId;
+                const element = utils.DomHandler.findSingle(this.list, `li[id="${id}"]`);
+                if (element) {
+                    element.scrollIntoView && element.scrollIntoView({ block: 'nearest', inline: 'start' });
                 }
-
-                return null;
-            },
-            searchOptionInGroup(index) {
-                let searchIndex = index === -1 ? {group: 0, option: -1} : index;
-
-                for (let i = searchIndex.group; i < this.visibleOptions.length; i++) {
-                    let groupOptions = this.getOptionGroupChildren(this.visibleOptions[i]);
-                    for (let j = (searchIndex.group === i ? searchIndex.option + 1 : 0); j < groupOptions.length; j++) {
-                        if (this.matchesSearchValue(groupOptions[j])) {
-                            return groupOptions[j];
-                        }
-                    }
+                else if (!this.virtualScrollerDisabled) {
+                    setTimeout(() => {
+                        this.virtualScroller && this.virtualScroller.scrollToIndex(index !== -1 ? index : this.focusedOptionIndex);
+                    }, 0);
                 }
-
-                for (let i = 0; i <= searchIndex.group; i++) {
-                    let groupOptions = this.getOptionGroupChildren(this.visibleOptions[i]);
-                    for (let j = 0; j < (searchIndex.group === i ? searchIndex.option: groupOptions.length); j++) {
-                        if (this.matchesSearchValue(groupOptions[j])) {
-                            return groupOptions[j];
-                        }
-                    }
+            },
+            autoUpdateModel() {
+                if (this.selectOnFocus && this.autoOptionFocus && !this.hasSelectedOption) {
+                    this.focusedOptionIndex = this.findFirstFocusedOptionIndex();
+                    const value = this.getOptionValue(this.visibleOptions[this.focusedOptionIndex]);
+                    this.updateModel(null, value);
                 }
-
-                return null;
             },
-            matchesSearchValue(option) {
-                let label = this.getOptionLabel(option).toLocaleLowerCase(this.filterLocale);
-                return label.startsWith(this.searchValue.toLocaleLowerCase(this.filterLocale));
-            },
-            onFilterChange(event) {
-                this.filterValue = event.target.value;
-                this.$emit('filter', {originalEvent: event, value: event.target.value});
-            },
-            onFilterUpdated() {
-                if (this.overlayVisible) {
-                    this.alignOverlay();
-                }
+            updateModel(event, value) {
+                this.$emit('update:modelValue', value);
+                this.$emit('change', { originalEvent: event, value });
             },
             overlayRef(el) {
                 this.overlay = el;
             },
-            itemsWrapperRef(el) {
-                this.itemsWrapper = el;
+            listRef(el, contentRef) {
+                this.list = el;
+                contentRef && contentRef(el); // For VirtualScroller
             },
             virtualScrollerRef(el) {
                 this.virtualScroller = el;
-            },
-            scrollValueInView() {
-                if (this.overlay) {
-                    let selectedItem = utils.DomHandler.findSingle(this.overlay, 'li.p-highlight');
-                    if (selectedItem) {
-                        selectedItem.scrollIntoView({ block: 'nearest', inline: 'start' });
-                    }
-                }
-            },
-            onOverlayClick(event) {
-                OverlayEventBus__default["default"].emit('overlay-click', {
-                    originalEvent: event,
-                    target: this.$el
-                });
             }
         },
         computed: {
-            visibleOptions() {
-                if (this.filterValue) {
-                    if (this.optionGroupLabel) {
-                        let filteredGroups = [];
-                        for (let optgroup of this.options) {
-                            let filteredSubOptions = api.FilterService.filter(this.getOptionGroupChildren(optgroup), this.searchFields, this.filterValue, this.filterMatchMode, this.filterLocale);
-                            if (filteredSubOptions && filteredSubOptions.length) {
-                                let filteredGroup = {...optgroup};
-                                filteredGroup[this.optionGroupChildren] = filteredSubOptions;
-                                filteredGroups.push(filteredGroup);
-                            }
-                        }
-                        return filteredGroups
-                    }
-                    else {
-                        return api.FilterService.filter(this.options, this.searchFields, this.filterValue, this.filterMatchMode, this.filterLocale);
-                    }
-                }
-                else {
-                    return this.options;
-                }
-            },
             containerClass() {
-                return [
-                    'p-dropdown p-component p-inputwrapper',
-                    {
-                        'p-disabled': this.disabled,
-                        'p-dropdown-clearable': this.showClear && !this.disabled,
-                        'p-focus': this.focused,
-                        'p-inputwrapper-filled': this.modelValue,
-                        'p-inputwrapper-focus': this.focused || this.overlayVisible
-                    }
-                ];
+                return ['p-dropdown p-component p-inputwrapper', {
+                    'p-disabled': this.disabled,
+                    'p-dropdown-clearable': this.showClear && !this.disabled,
+                    'p-focus': this.focused,
+                    'p-inputwrapper-filled': this.modelValue,
+                    'p-inputwrapper-focus': this.focused || this.overlayVisible,
+                    'p-overlay-open': this.overlayVisible
+                }];
             },
-            labelClass() {
-                return [
-                    'p-dropdown-label p-inputtext',
-                    {
-                        'p-placeholder': this.label === this.placeholder,
-                        'p-dropdown-label-empty': !this.$slots['value'] && (this.label === 'p-emptylabel' || this.label.length === 0)
-                    }
-                ];
+            inputStyleClass() {
+                return ['p-dropdown-label p-inputtext', this.inputClass, {
+                    'p-placeholder': !this.editable && this.label === this.placeholder,
+                    'p-dropdown-label-empty': !this.editable && !this.$slots['value'] && (this.label === 'p-emptylabel' || this.label.length === 0)
+                }];
             },
             panelStyleClass() {
                 return ['p-dropdown-panel p-component', this.panelClass, {
@@ -4945,19 +5172,35 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                     'p-ripple-disabled': this.$primevue.config.ripple === false
                 }];
             },
+            dropdownIconClass() {
+                return ['p-dropdown-trigger-icon', (this.loading ? this.loadingIcon : 'pi pi-chevron-down')];
+            },
+            visibleOptions() {
+                let options = this.options || [];
+
+                if (this.optionGroupLabel) {
+                    options = options.reduce((result, option, index) => {
+                        result.push({ optionGroup: option, group: true, groupIndex: index });
+
+                        let optionGroupChildren = this.getOptionGroupChildren(option);
+                        optionGroupChildren && optionGroupChildren.forEach(o => result.push(o));
+
+                        return result;
+                    }, []);
+                }
+
+                return this.filterValue ? api.FilterService.filter(options, this.searchFields, this.filterValue, this.filterMatchMode, this.filterLocale) : options;
+            },
+            hasSelectedOption() {
+                return utils.ObjectUtils.isNotEmpty(this.modelValue);
+            },
             label() {
-                let selectedOption = this.getSelectedOption();
-                if (selectedOption !== null)
-                    return this.getOptionLabel(selectedOption);
-                else
-                    return this.placeholder||'p-emptylabel';
+                const selectedOptionIndex = this.findSelectedOptionIndex();
+                return selectedOptionIndex !== -1 ? this.getOptionLabel(this.visibleOptions[selectedOptionIndex]) : (this.placeholder || 'p-emptylabel');
             },
             editableInputValue() {
-                let selectedOption = this.getSelectedOption();
-                if (selectedOption)
-                    return this.getOptionLabel(selectedOption);
-                else
-                    return this.modelValue;
+                const selectedOptionIndex = this.findSelectedOptionIndex();
+                return selectedOptionIndex !== -1 ? this.getOptionLabel(this.visibleOptions[selectedOptionIndex]) : (this.modelValue || '');
             },
             equalityKey() {
                 return this.optionValue ? null : this.dataKey;
@@ -4965,17 +5208,35 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
             searchFields() {
                 return this.filterFields || [this.optionLabel];
             },
+            filterResultMessageText() {
+                return utils.ObjectUtils.isNotEmpty(this.visibleOptions) ? this.filterMessageText.replaceAll('{0}', this.visibleOptions.length) : this.emptyFilterMessageText;
+            },
+            filterMessageText() {
+                return this.filterMessage || this.$primevue.config.locale.searchMessage;
+            },
             emptyFilterMessageText() {
-                return this.emptyFilterMessage || this.$primevue.config.locale.emptyFilterMessage;
+                return this.emptyFilterMessage || this.$primevue.config.locale.emptySearchMessage || this.$primevue.config.locale.emptyFilterMessage;
             },
             emptyMessageText() {
                 return this.emptyMessage || this.$primevue.config.locale.emptyMessage;
             },
+            selectionMessageText() {
+                return this.selectionMessage || this.$primevue.config.locale.selectionMessage;
+            },
+            emptySelectionMessageText() {
+                return this.emptySelectionMessage || this.$primevue.config.locale.emptySelectionMessage;
+            },
+            selectedMessageText() {
+                return utils.ObjectUtils.isNotEmpty(this.modelValue) ? this.selectionMessageText.replaceAll('{0}', '1') : this.emptySelectionMessageText;
+            },
+            focusedOptionId() {
+                return this.focusedOptionIndex !== -1 ? `${this.id}_${this.focusedOptionIndex}` : null;
+            },
+            ariaSetSize() {
+                return this.visibleOptions.filter(option => !this.isOptionGroup(option)).length;
+            },
             virtualScrollerDisabled() {
                 return !this.virtualScrollerOptions;
-            },
-            dropdownIconClass() {
-                return ['p-dropdown-trigger-icon', this.loading ? this.loadingIcon : 'pi pi-chevron-down'];
             }
         },
         directives: {
@@ -4987,27 +5248,45 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
         }
     };
 
-    const _hoisted_1 = { class: "p-hidden-accessible" };
-    const _hoisted_2 = ["id", "disabled", "tabindex", "aria-expanded", "aria-labelledby"];
-    const _hoisted_3 = ["disabled", "placeholder", "value", "aria-expanded"];
-    const _hoisted_4 = ["aria-expanded"];
+    const _hoisted_1 = ["id"];
+    const _hoisted_2 = ["id", "value", "placeholder", "tabindex", "disabled", "aria-label", "aria-labelledby", "aria-expanded", "aria-controls", "aria-activedescendant"];
+    const _hoisted_3 = ["id", "tabindex", "aria-label", "aria-labelledby", "aria-expanded", "aria-controls", "aria-activedescendant", "aria-disabled"];
+    const _hoisted_4 = { class: "p-dropdown-trigger" };
     const _hoisted_5 = {
       key: 0,
       class: "p-dropdown-header"
     };
     const _hoisted_6 = { class: "p-dropdown-filter-container" };
-    const _hoisted_7 = ["value", "placeholder"];
+    const _hoisted_7 = ["value", "placeholder", "aria-owns", "aria-activedescendant"];
     const _hoisted_8 = /*#__PURE__*/vue.createElementVNode("span", { class: "p-dropdown-filter-icon pi pi-search" }, null, -1);
-    const _hoisted_9 = ["onClick", "aria-label", "aria-selected"];
-    const _hoisted_10 = { class: "p-dropdown-item-group" };
-    const _hoisted_11 = ["onClick", "aria-label", "aria-selected"];
-    const _hoisted_12 = {
-      key: 2,
-      class: "p-dropdown-empty-message"
+    const _hoisted_9 = {
+      role: "status",
+      "aria-live": "polite",
+      class: "p-hidden-accessible"
     };
+    const _hoisted_10 = ["id"];
+    const _hoisted_11 = ["id"];
+    const _hoisted_12 = ["id", "aria-label", "aria-selected", "aria-disabled", "aria-setsize", "aria-posinset", "onClick", "onMousemove"];
     const _hoisted_13 = {
-      key: 3,
-      class: "p-dropdown-empty-message"
+      key: 0,
+      class: "p-dropdown-empty-message",
+      role: "option"
+    };
+    const _hoisted_14 = {
+      key: 1,
+      class: "p-dropdown-empty-message",
+      role: "option"
+    };
+    const _hoisted_15 = {
+      key: 0,
+      role: "status",
+      "aria-live": "polite",
+      class: "p-hidden-accessible"
+    };
+    const _hoisted_16 = {
+      role: "status",
+      "aria-live": "polite",
+      class: "p-hidden-accessible"
     };
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -5017,72 +5296,76 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
 
       return (vue.openBlock(), vue.createElementBlock("div", {
         ref: "container",
+        id: $data.id,
         class: vue.normalizeClass($options.containerClass),
-        onClick: _cache[11] || (_cache[11] = $event => ($options.onClick($event)))
+        onClick: _cache[15] || (_cache[15] = (...args) => ($options.onContainerClick && $options.onContainerClick(...args)))
       }, [
-        vue.createElementVNode("div", _hoisted_1, [
-          vue.createElementVNode("input", {
-            ref: "focusInput",
-            type: "text",
-            id: $props.inputId,
-            readonly: "",
-            disabled: $props.disabled,
-            onFocus: _cache[0] || (_cache[0] = (...args) => ($options.onFocus && $options.onFocus(...args))),
-            onBlur: _cache[1] || (_cache[1] = (...args) => ($options.onBlur && $options.onBlur(...args))),
-            onKeydown: _cache[2] || (_cache[2] = (...args) => ($options.onKeyDown && $options.onKeyDown(...args))),
-            tabindex: $props.tabindex,
-            "aria-haspopup": "true",
-            "aria-expanded": $data.overlayVisible,
-            "aria-labelledby": $props.ariaLabelledBy
-          }, null, 40, _hoisted_2)
-        ]),
         ($props.editable)
-          ? (vue.openBlock(), vue.createElementBlock("input", {
+          ? (vue.openBlock(), vue.createElementBlock("input", vue.mergeProps({
               key: 0,
+              ref: "focusInput",
+              id: $props.inputId,
               type: "text",
-              class: "p-dropdown-label p-inputtext",
-              disabled: $props.disabled,
-              onFocus: _cache[3] || (_cache[3] = (...args) => ($options.onFocus && $options.onFocus(...args))),
-              onBlur: _cache[4] || (_cache[4] = (...args) => ($options.onBlur && $options.onBlur(...args))),
-              placeholder: $props.placeholder,
+              style: $props.inputStyle,
+              class: $options.inputStyleClass,
               value: $options.editableInputValue,
-              onInput: _cache[5] || (_cache[5] = (...args) => ($options.onEditableInput && $options.onEditableInput(...args))),
+              placeholder: $props.placeholder,
+              tabindex: !$props.disabled ? $props.tabindex : -1,
+              disabled: $props.disabled,
+              autocomplete: "off",
+              role: "combobox",
+              "aria-label": $props.ariaLabel,
+              "aria-labelledby": $props.ariaLabelledby,
               "aria-haspopup": "listbox",
-              "aria-expanded": $data.overlayVisible
-            }, null, 40, _hoisted_3))
-          : vue.createCommentVNode("", true),
-        (!$props.editable)
-          ? (vue.openBlock(), vue.createElementBlock("span", {
+              "aria-expanded": $data.overlayVisible,
+              "aria-controls": $data.id + '_list',
+              "aria-activedescendant": $data.focused ? $options.focusedOptionId : undefined,
+              onFocus: _cache[0] || (_cache[0] = (...args) => ($options.onFocus && $options.onFocus(...args))),
+              onBlur: _cache[1] || (_cache[1] = (...args) => ($options.onBlur && $options.onBlur(...args))),
+              onKeydown: _cache[2] || (_cache[2] = (...args) => ($options.onKeyDown && $options.onKeyDown(...args))),
+              onInput: _cache[3] || (_cache[3] = (...args) => ($options.onEditableInput && $options.onEditableInput(...args)))
+            }, $props.inputProps), null, 16, _hoisted_2))
+          : (vue.openBlock(), vue.createElementBlock("span", vue.mergeProps({
               key: 1,
-              class: vue.normalizeClass($options.labelClass)
-            }, [
+              ref: "focusInput",
+              id: $props.inputId,
+              style: $props.inputStyle,
+              class: $options.inputStyleClass,
+              tabindex: !$props.disabled ? $props.tabindex : -1,
+              role: "combobox",
+              "aria-label": $props.ariaLabel || ($options.label === 'p-emptylabel' ? undefined : $options.label),
+              "aria-labelledby": $props.ariaLabelledby,
+              "aria-haspopup": "listbox",
+              "aria-expanded": $data.overlayVisible,
+              "aria-controls": $data.id + '_list',
+              "aria-activedescendant": $data.focused ? $options.focusedOptionId : undefined,
+              "aria-disabled": $props.disabled,
+              onFocus: _cache[4] || (_cache[4] = (...args) => ($options.onFocus && $options.onFocus(...args))),
+              onBlur: _cache[5] || (_cache[5] = (...args) => ($options.onBlur && $options.onBlur(...args))),
+              onKeydown: _cache[6] || (_cache[6] = (...args) => ($options.onKeyDown && $options.onKeyDown(...args)))
+            }, $props.inputProps), [
               vue.renderSlot(_ctx.$slots, "value", {
                 value: $props.modelValue,
                 placeholder: $props.placeholder
               }, () => [
-                vue.createTextVNode(vue.toDisplayString($options.label||'empty'), 1)
+                vue.createTextVNode(vue.toDisplayString($options.label === 'p-emptylabel' ? ' ' : $options.label || 'empty'), 1)
               ])
-            ], 2))
-          : vue.createCommentVNode("", true),
+            ], 16, _hoisted_3)),
         ($props.showClear && $props.modelValue != null)
-          ? (vue.openBlock(), vue.createElementBlock("i", {
+          ? (vue.openBlock(), vue.createElementBlock("i", vue.mergeProps({
               key: 2,
               class: "p-dropdown-clear-icon pi pi-times",
-              onClick: _cache[6] || (_cache[6] = $event => ($options.onClearClick($event)))
-            }))
+              onClick: _cache[7] || (_cache[7] = (...args) => ($options.onClearClick && $options.onClearClick(...args)))
+            }, $props.clearIconProps), null, 16))
           : vue.createCommentVNode("", true),
-        vue.createElementVNode("div", {
-          class: "p-dropdown-trigger",
-          role: "button",
-          "aria-haspopup": "listbox",
-          "aria-expanded": $data.overlayVisible
-        }, [
+        vue.createElementVNode("div", _hoisted_4, [
           vue.renderSlot(_ctx.$slots, "indicator", {}, () => [
             vue.createElementVNode("span", {
-              class: vue.normalizeClass($options.dropdownIconClass)
+              class: vue.normalizeClass($options.dropdownIconClass),
+              "aria-hidden": "true"
             }, null, 2)
           ])
-        ], 8, _hoisted_4),
+        ]),
         vue.createVNode(_component_Portal, { appendTo: $props.appendTo }, {
           default: vue.withCtx(() => [
             vue.createVNode(vue.Transition, {
@@ -5094,12 +5377,21 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
             }, {
               default: vue.withCtx(() => [
                 ($data.overlayVisible)
-                  ? (vue.openBlock(), vue.createElementBlock("div", {
+                  ? (vue.openBlock(), vue.createElementBlock("div", vue.mergeProps({
                       key: 0,
                       ref: $options.overlayRef,
-                      class: vue.normalizeClass($options.panelStyleClass),
-                      onClick: _cache[10] || (_cache[10] = (...args) => ($options.onOverlayClick && $options.onOverlayClick(...args)))
-                    }, [
+                      style: $props.panelStyle,
+                      class: $options.panelStyleClass,
+                      onClick: _cache[14] || (_cache[14] = (...args) => ($options.onOverlayClick && $options.onOverlayClick(...args)))
+                    }, $props.panelProps), [
+                      vue.createElementVNode("a", {
+                        ref: "firstHiddenFocusableElementOnOverlay",
+                        role: "presentation",
+                        "aria-hidden": "true",
+                        class: "p-hidden-accessible p-hidden-focusable",
+                        tabindex: 0,
+                        onFocus: _cache[8] || (_cache[8] = (...args) => ($options.onFirstHiddenFocus && $options.onFirstHiddenFocus(...args)))
+                      }, null, 544),
                       vue.renderSlot(_ctx.$slots, "header", {
                         value: $props.modelValue,
                         options: $options.visibleOptions
@@ -5107,105 +5399,106 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                       ($props.filter)
                         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5, [
                             vue.createElementVNode("div", _hoisted_6, [
-                              vue.createElementVNode("input", {
+                              vue.createElementVNode("input", vue.mergeProps({
                                 type: "text",
                                 ref: "filterInput",
                                 value: $data.filterValue,
-                                onVnodeUpdated: _cache[7] || (_cache[7] = (...args) => ($options.onFilterUpdated && $options.onFilterUpdated(...args))),
-                                autoComplete: "off",
+                                onVnodeUpdated: _cache[9] || (_cache[9] = (...args) => ($options.onFilterUpdated && $options.onFilterUpdated(...args))),
                                 class: "p-dropdown-filter p-inputtext p-component",
                                 placeholder: $props.filterPlaceholder,
-                                onKeydown: _cache[8] || (_cache[8] = (...args) => ($options.onFilterKeyDown && $options.onFilterKeyDown(...args))),
-                                onInput: _cache[9] || (_cache[9] = (...args) => ($options.onFilterChange && $options.onFilterChange(...args)))
-                              }, null, 40, _hoisted_7),
+                                role: "searchbox",
+                                autocomplete: "off",
+                                "aria-owns": $data.id + '_list',
+                                "aria-activedescendant": $options.focusedOptionId,
+                                onKeydown: _cache[10] || (_cache[10] = (...args) => ($options.onFilterKeyDown && $options.onFilterKeyDown(...args))),
+                                onBlur: _cache[11] || (_cache[11] = (...args) => ($options.onFilterBlur && $options.onFilterBlur(...args))),
+                                onInput: _cache[12] || (_cache[12] = (...args) => ($options.onFilterChange && $options.onFilterChange(...args)))
+                              }, $props.filterInputProps), null, 16, _hoisted_7),
                               _hoisted_8
-                            ])
+                            ]),
+                            vue.createElementVNode("span", _hoisted_9, vue.toDisplayString($options.filterResultMessageText), 1)
                           ]))
                         : vue.createCommentVNode("", true),
                       vue.createElementVNode("div", {
-                        ref: $options.itemsWrapperRef,
                         class: "p-dropdown-items-wrapper",
                         style: vue.normalizeStyle({'max-height': $options.virtualScrollerDisabled ? $props.scrollHeight : ''})
                       }, [
                         vue.createVNode(_component_VirtualScroller, vue.mergeProps({ ref: $options.virtualScrollerRef }, $props.virtualScrollerOptions, {
                           items: $options.visibleOptions,
                           style: {'height': $props.scrollHeight},
+                          tabindex: -1,
                           disabled: $options.virtualScrollerDisabled
                         }), vue.createSlots({
-                          content: vue.withCtx(({ styleClass, contentRef, items, getItemOptions, contentStyle }) => [
+                          content: vue.withCtx(({ styleClass, contentRef, items, getItemOptions, contentStyle, itemSize }) => [
                             vue.createElementVNode("ul", {
-                              ref: contentRef,
+                              ref: (el) => $options.listRef(el, contentRef),
+                              id: $data.id + '_list',
                               class: vue.normalizeClass(['p-dropdown-items', styleClass]),
                               style: vue.normalizeStyle(contentStyle),
                               role: "listbox"
                             }, [
-                              (!$props.optionGroupLabel)
-                                ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 0 }, vue.renderList(items, (option, i) => {
-                                    return vue.withDirectives((vue.openBlock(), vue.createElementBlock("li", {
-                                      class: vue.normalizeClass(['p-dropdown-item', {'p-highlight': $options.isSelected(option), 'p-disabled': $options.isOptionDisabled(option)}]),
-                                      key: $options.getOptionRenderKey(option, i),
-                                      onClick: $event => ($options.onOptionSelect($event, option)),
-                                      role: "option",
-                                      "aria-label": $options.getOptionLabel(option),
-                                      "aria-selected": $options.isSelected(option)
-                                    }, [
-                                      vue.renderSlot(_ctx.$slots, "option", {
-                                        option: option,
-                                        index: $options.getOptionIndex(i, getItemOptions)
-                                      }, () => [
-                                        vue.createTextVNode(vue.toDisplayString($options.getOptionLabel(option)), 1)
-                                      ])
-                                    ], 10, _hoisted_9)), [
-                                      [_directive_ripple]
-                                    ])
-                                  }), 128))
-                                : (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 1 }, vue.renderList(items, (optionGroup, i) => {
-                                    return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
-                                      key: $options.getOptionGroupRenderKey(optionGroup)
-                                    }, [
-                                      vue.createElementVNode("li", _hoisted_10, [
+                              (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(items, (option, i) => {
+                                return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
+                                  key: $options.getOptionRenderKey(option, $options.getOptionIndex(i, getItemOptions))
+                                }, [
+                                  ($options.isOptionGroup(option))
+                                    ? (vue.openBlock(), vue.createElementBlock("li", {
+                                        key: 0,
+                                        id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
+                                        style: vue.normalizeStyle({height: itemSize ? itemSize + 'px' : undefined}),
+                                        class: "p-dropdown-item-group",
+                                        role: "option"
+                                      }, [
                                         vue.renderSlot(_ctx.$slots, "optiongroup", {
-                                          option: optionGroup,
+                                          option: option.optionGroup,
                                           index: $options.getOptionIndex(i, getItemOptions)
                                         }, () => [
-                                          vue.createTextVNode(vue.toDisplayString($options.getOptionGroupLabel(optionGroup)), 1)
+                                          vue.createTextVNode(vue.toDisplayString($options.getOptionGroupLabel(option.optionGroup)), 1)
                                         ])
-                                      ]),
-                                      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.getOptionGroupChildren(optionGroup), (option, i) => {
-                                        return vue.withDirectives((vue.openBlock(), vue.createElementBlock("li", {
-                                          class: vue.normalizeClass(['p-dropdown-item', {'p-highlight': $options.isSelected(option), 'p-disabled': $options.isOptionDisabled(option)}]),
-                                          key: $options.getOptionRenderKey(option, i),
-                                          onClick: $event => ($options.onOptionSelect($event, option)),
-                                          role: "option",
-                                          "aria-label": $options.getOptionLabel(option),
-                                          "aria-selected": $options.isSelected(option)
-                                        }, [
-                                          vue.renderSlot(_ctx.$slots, "option", {
-                                            option: option,
-                                            index: $options.getOptionIndex(i, getItemOptions)
-                                          }, () => [
-                                            vue.createTextVNode(vue.toDisplayString($options.getOptionLabel(option)), 1)
-                                          ])
-                                        ], 10, _hoisted_11)), [
-                                          [_directive_ripple]
+                                      ], 12, _hoisted_11))
+                                    : vue.withDirectives((vue.openBlock(), vue.createElementBlock("li", {
+                                        key: 1,
+                                        id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
+                                        style: vue.normalizeStyle({height: itemSize ? itemSize + 'px' : undefined}),
+                                        class: vue.normalizeClass(['p-dropdown-item', {'p-highlight': $options.isSelected(option), 'p-focus': $data.focusedOptionIndex === $options.getOptionIndex(i, getItemOptions), 'p-disabled': $options.isOptionDisabled(option)}]),
+                                        role: "option",
+                                        "aria-label": $options.getOptionLabel(option),
+                                        "aria-selected": $options.isSelected(option),
+                                        "aria-disabled": $options.isOptionDisabled(option),
+                                        "aria-setsize": $options.ariaSetSize,
+                                        "aria-posinset": $options.getAriaPosInset($options.getOptionIndex(i, getItemOptions)),
+                                        onClick: $event => ($options.onOptionSelect($event, option)),
+                                        onMousemove: $event => ($options.onOptionMouseMove($event, $options.getOptionIndex(i, getItemOptions)))
+                                      }, [
+                                        vue.renderSlot(_ctx.$slots, "option", {
+                                          option: option,
+                                          index: $options.getOptionIndex(i, getItemOptions)
+                                        }, () => [
+                                          vue.createTextVNode(vue.toDisplayString($options.getOptionLabel(option)), 1)
                                         ])
-                                      }), 128))
-                                    ], 64))
-                                  }), 128)),
+                                      ], 46, _hoisted_12)), [
+                                        [_directive_ripple]
+                                      ])
+                                ], 64))
+                              }), 128)),
                               ($data.filterValue && (!items || (items && items.length === 0)))
-                                ? (vue.openBlock(), vue.createElementBlock("li", _hoisted_12, [
+                                ? (vue.openBlock(), vue.createElementBlock("li", _hoisted_13, [
                                     vue.renderSlot(_ctx.$slots, "emptyfilter", {}, () => [
                                       vue.createTextVNode(vue.toDisplayString($options.emptyFilterMessageText), 1)
                                     ])
                                   ]))
                                 : ((!$props.options || ($props.options && $props.options.length === 0)))
-                                  ? (vue.openBlock(), vue.createElementBlock("li", _hoisted_13, [
+                                  ? (vue.openBlock(), vue.createElementBlock("li", _hoisted_14, [
                                       vue.renderSlot(_ctx.$slots, "empty", {}, () => [
                                         vue.createTextVNode(vue.toDisplayString($options.emptyMessageText), 1)
                                       ])
                                     ]))
                                   : vue.createCommentVNode("", true)
-                            ], 6)
+                            ], 14, _hoisted_10),
+                            ((!$props.options || ($props.options && $props.options.length === 0)))
+                              ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_15, vue.toDisplayString($options.emptyMessageText), 1))
+                              : vue.createCommentVNode("", true),
+                            vue.createElementVNode("span", _hoisted_16, vue.toDisplayString($options.selectedMessageText), 1)
                           ]),
                           _: 2
                         }, [
@@ -5222,8 +5515,16 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
                       vue.renderSlot(_ctx.$slots, "footer", {
                         value: $props.modelValue,
                         options: $options.visibleOptions
-                      })
-                    ], 2))
+                      }),
+                      vue.createElementVNode("a", {
+                        ref: "lastHiddenFocusableElementOnOverlay",
+                        role: "presentation",
+                        "aria-hidden": "true",
+                        class: "p-hidden-accessible p-hidden-focusable",
+                        tabindex: 0,
+                        onFocus: _cache[13] || (_cache[13] = (...args) => ($options.onLastHiddenFocus && $options.onLastHiddenFocus(...args)))
+                      }, null, 544)
+                    ], 16))
                   : vue.createCommentVNode("", true)
               ]),
               _: 3
@@ -5231,7 +5532,7 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
           ]),
           _: 3
         }, 8, ["appendTo"])
-      ], 2))
+      ], 10, _hoisted_1))
     }
 
     function styleInject(css, ref) {
@@ -5261,7 +5562,7 @@ this.primevue.dropdown = (function (utils, OverlayEventBus, api, Ripple, Virtual
       }
     }
 
-    var css_248z = "\n.p-dropdown {\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    cursor: pointer;\n    position: relative;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.p-dropdown-clear-icon {\n    position: absolute;\n    top: 50%;\n    margin-top: -.5rem;\n}\n.p-dropdown-trigger {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n}\n.p-dropdown-label {\n    display: block;\n    white-space: nowrap;\n    overflow: hidden;\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n    width: 1%;\n    text-overflow: ellipsis;\n    cursor: pointer;\n}\n.p-dropdown-label-empty {\n    overflow: hidden;\n    visibility: hidden;\n}\ninput.p-dropdown-label  {\n    cursor: default;\n}\n.p-dropdown .p-dropdown-panel {\n    min-width: 100%;\n}\n.p-dropdown-panel {\n    position: absolute;\n    top: 0;\n    left: 0;\n}\n.p-dropdown-items-wrapper {\n    overflow: auto;\n}\n.p-dropdown-item {\n    cursor: pointer;\n    font-weight: normal;\n    white-space: nowrap;\n    position: relative;\n    overflow: hidden;\n}\n.p-dropdown-item-group {\n    cursor: auto;\n}\n.p-dropdown-items {\n    margin: 0;\n    padding: 0;\n    list-style-type: none;\n}\n.p-dropdown-filter {\n    width: 100%;\n}\n.p-dropdown-filter-container {\n    position: relative;\n}\n.p-dropdown-filter-icon {\n    position: absolute;\n    top: 50%;\n    margin-top: -.5rem;\n}\n.p-fluid .p-dropdown {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n.p-fluid .p-dropdown .p-dropdown-label {\n    width: 1%;\n}\n";
+    var css_248z = "\n.p-dropdown {\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\r\n    cursor: pointer;\r\n    position: relative;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\n}\n.p-dropdown-clear-icon {\r\n    position: absolute;\r\n    top: 50%;\r\n    margin-top: -.5rem;\n}\n.p-dropdown-trigger {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -ms-flex-negative: 0;\r\n        flex-shrink: 0;\n}\n.p-dropdown-label {\r\n    display: block;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\r\n    width: 1%;\r\n    text-overflow: ellipsis;\r\n    cursor: pointer;\n}\n.p-dropdown-label-empty {\r\n    overflow: hidden;\r\n    opacity: 0;\n}\ninput.p-dropdown-label  {\r\n    cursor: default;\n}\n.p-dropdown .p-dropdown-panel {\r\n    min-width: 100%;\n}\n.p-dropdown-panel {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\n}\n.p-dropdown-items-wrapper {\r\n    overflow: auto;\n}\n.p-dropdown-item {\r\n    cursor: pointer;\r\n    font-weight: normal;\r\n    white-space: nowrap;\r\n    position: relative;\r\n    overflow: hidden;\n}\n.p-dropdown-item-group {\r\n    cursor: auto;\n}\n.p-dropdown-items {\r\n    margin: 0;\r\n    padding: 0;\r\n    list-style-type: none;\n}\n.p-dropdown-filter {\r\n    width: 100%;\n}\n.p-dropdown-filter-container {\r\n    position: relative;\n}\n.p-dropdown-filter-icon {\r\n    position: absolute;\r\n    top: 50%;\r\n    margin-top: -.5rem;\n}\n.p-fluid .p-dropdown {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\n}\n.p-fluid .p-dropdown .p-dropdown-label {\r\n    width: 1%;\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;
@@ -6509,7 +6810,7 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
           }
         }
 
-        var css_248z = "\n.p-paginator {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n}\n.p-paginator-left-content {\n\tmargin-right: auto;\n}\n.p-paginator-right-content {\n\tmargin-left: auto;\n}\n.p-paginator-page,\n.p-paginator-next,\n.p-paginator-last,\n.p-paginator-first,\n.p-paginator-prev,\n.p-paginator-current {\n    cursor: pointer;\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    line-height: 1;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    overflow: hidden;\n    position: relative;\n}\n.p-paginator-element:focus {\n    z-index: 1;\n    position: relative;\n}\n";
+        var css_248z = "\n.p-paginator {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -ms-flex-wrap: wrap;\r\n        flex-wrap: wrap;\n}\n.p-paginator-left-content {\r\n\tmargin-right: auto;\n}\n.p-paginator-right-content {\r\n\tmargin-left: auto;\n}\n.p-paginator-page,\r\n.p-paginator-next,\r\n.p-paginator-last,\r\n.p-paginator-first,\r\n.p-paginator-prev,\r\n.p-paginator-current {\r\n    cursor: pointer;\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    line-height: 1;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\r\n    overflow: hidden;\r\n    position: relative;\n}\n.p-paginator-element:focus {\r\n    z-index: 1;\r\n    position: relative;\n}\r\n";
         styleInject(css_248z);
 
         script.render = render;
@@ -6548,6 +6849,14 @@ this.primevue.tree = (function (utils, Ripple, vue) {
             },
             templates: {
                 type: null,
+                default: null
+            },
+            level: {
+                type: Number,
+                default: null
+            },
+            index: {
+                type: Number,
                 default: null
             }
         },
@@ -6589,9 +6898,8 @@ this.primevue.tree = (function (utils, Ripple, vue) {
             onKeyDown(event) {
                 const nodeElement = event.target.parentElement;
 
-                switch (event.which) {
-                    //down arrow
-                    case 40:
+                switch (event.code) {
+                    case 'ArrowDown':
                         var listElement = nodeElement.children[1];
                         if (listElement) {
                             this.focusNode(listElement.children[0]);
@@ -6608,12 +6916,9 @@ this.primevue.tree = (function (utils, Ripple, vue) {
                                 }
                             }
                         }
-
-                        event.preventDefault();
                     break;
 
-                    //up arrow
-                    case 38:
+                    case 'ArrowUp':
                         if (nodeElement.previousElementSibling) {
                             this.focusNode(this.findLastVisibleDescendant(nodeElement.previousElementSibling));
                         }
@@ -6623,24 +6928,20 @@ this.primevue.tree = (function (utils, Ripple, vue) {
                                 this.focusNode(parentNodeElement);
                             }
                         }
-
-                        event.preventDefault();
                     break;
 
-                    //right-left arrows
-                    case 37:
-                    case 39:
+                    case 'ArrowRight':
+                    case 'ArrowLeft':
                         this.$emit('node-toggle', this.node);
-
-                        event.preventDefault();
                     break;
 
-                    //enter
-                    case 13:
+                    case 'Enter':
+                    case 'Space':
                         this.onClick(event);
-                        event.preventDefault();
                     break;
                 }
+
+                event.preventDefault();
             },
             toggleCheckbox() {
                 let _selectionKeys = this.selectionKeys ? {...this.selectionKeys} : {};
@@ -6789,14 +7090,15 @@ this.primevue.tree = (function (utils, Ripple, vue) {
         }
     };
 
-    const _hoisted_1$1 = ["aria-expanded"];
-    const _hoisted_2$1 = {
+    const _hoisted_1$1 = ["aria-label", "aria-selected", "aria-expanded", "aria-setsize", "aria-posinset", "aria-level"];
+    const _hoisted_2$1 = ["aria-expanded"];
+    const _hoisted_3$1 = {
       key: 0,
       class: "p-checkbox p-component"
     };
-    const _hoisted_3$1 = ["aria-checked"];
-    const _hoisted_4$1 = { class: "p-treenode-label" };
-    const _hoisted_5$1 = {
+    const _hoisted_4$1 = ["aria-checked"];
+    const _hoisted_5$1 = { class: "p-treenode-label" };
+    const _hoisted_6 = {
       key: 0,
       class: "p-treenode-children",
       role: "group"
@@ -6807,7 +7109,14 @@ this.primevue.tree = (function (utils, Ripple, vue) {
       const _directive_ripple = vue.resolveDirective("ripple");
 
       return (vue.openBlock(), vue.createElementBlock("li", {
-        class: vue.normalizeClass($options.containerClass)
+        class: vue.normalizeClass($options.containerClass),
+        role: "treeitem",
+        "aria-label": $options.label($props.node),
+        "aria-selected": $options.selected,
+        "aria-expanded": $options.expanded,
+        "aria-setsize": $props.node.children ? $props.node.children.length : 0,
+        "aria-posinset": $props.index + 1,
+        "aria-level": $props.level
       }, [
         vue.createElementVNode("div", {
           class: vue.normalizeClass($options.contentClass),
@@ -6832,7 +7141,7 @@ this.primevue.tree = (function (utils, Ripple, vue) {
             [_directive_ripple]
           ]),
           ($options.checkboxMode)
-            ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$1, [
+            ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$1, [
                 vue.createElementVNode("div", {
                   class: vue.normalizeClass($options.checkboxClass),
                   role: "checkbox",
@@ -6841,13 +7150,13 @@ this.primevue.tree = (function (utils, Ripple, vue) {
                   vue.createElementVNode("span", {
                     class: vue.normalizeClass($options.checkboxIcon)
                   }, null, 2)
-                ], 10, _hoisted_3$1)
+                ], 10, _hoisted_4$1)
               ]))
             : vue.createCommentVNode("", true),
           vue.createElementVNode("span", {
             class: vue.normalizeClass($options.icon)
           }, null, 2),
-          vue.createElementVNode("span", _hoisted_4$1, [
+          vue.createElementVNode("span", _hoisted_5$1, [
             ($props.templates[$props.node.type]||$props.templates['default'])
               ? (vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent($props.templates[$props.node.type]||$props.templates['default']), {
                   key: 0,
@@ -6857,25 +7166,26 @@ this.primevue.tree = (function (utils, Ripple, vue) {
                   vue.createTextVNode(vue.toDisplayString($options.label($props.node)), 1)
                 ], 64))
           ])
-        ], 46, _hoisted_1$1),
+        ], 46, _hoisted_2$1),
         ($options.hasChildren && $options.expanded)
-          ? (vue.openBlock(), vue.createElementBlock("ul", _hoisted_5$1, [
+          ? (vue.openBlock(), vue.createElementBlock("ul", _hoisted_6, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.node.children, (childNode) => {
                 return (vue.openBlock(), vue.createBlock(_component_TreeNode, {
                   key: childNode.key,
                   node: childNode,
                   templates: $props.templates,
+                  level: $props.level + 1,
                   expandedKeys: $props.expandedKeys,
                   onNodeToggle: $options.onChildNodeToggle,
                   onNodeClick: $options.onChildNodeClick,
                   selectionMode: $props.selectionMode,
                   selectionKeys: $props.selectionKeys,
                   onCheckboxChange: $options.propagateUp
-                }, null, 8, ["node", "templates", "expandedKeys", "onNodeToggle", "onNodeClick", "selectionMode", "selectionKeys", "onCheckboxChange"]))
+                }, null, 8, ["node", "templates", "level", "expandedKeys", "onNodeToggle", "onNodeClick", "selectionMode", "selectionKeys", "onCheckboxChange"]))
               }), 128))
             ]))
           : vue.createCommentVNode("", true)
-      ], 2))
+      ], 10, _hoisted_1$1))
     }
 
     script$1.render = render$1;
@@ -6935,6 +7245,10 @@ this.primevue.tree = (function (utils, Ripple, vue) {
             scrollHeight: {
                 type: String,
                 default: null
+            },
+            level: {
+                type: Number,
+                default: 0
             }
         },
         data() {
@@ -7190,18 +7504,20 @@ this.primevue.tree = (function (utils, Ripple, vue) {
           style: vue.normalizeStyle({maxHeight: $props.scrollHeight})
         }, [
           vue.createElementVNode("ul", _hoisted_5, [
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.valueToRender, (node) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.valueToRender, (node, index) => {
               return (vue.openBlock(), vue.createBlock(_component_TreeNode, {
                 key: node.key,
                 node: node,
                 templates: _ctx.$slots,
+                level: $props.level + 1,
+                index: index,
                 expandedKeys: $data.d_expandedKeys,
                 onNodeToggle: $options.onNodeToggle,
                 onNodeClick: $options.onNodeClick,
                 selectionMode: $props.selectionMode,
                 selectionKeys: $props.selectionKeys,
                 onCheckboxChange: $options.onCheckboxChange
-              }, null, 8, ["node", "templates", "expandedKeys", "onNodeToggle", "onNodeClick", "selectionMode", "selectionKeys", "onCheckboxChange"]))
+              }, null, 8, ["node", "templates", "level", "index", "expandedKeys", "onNodeToggle", "onNodeClick", "selectionMode", "selectionKeys", "onCheckboxChange"]))
             }), 128))
           ])
         ], 4)
@@ -7235,7 +7551,7 @@ this.primevue.tree = (function (utils, Ripple, vue) {
       }
     }
 
-    var css_248z = "\n.p-tree-container {\n    margin: 0;\n    padding: 0;\n    list-style-type: none;\n    overflow: auto;\n}\n.p-treenode-children {\n    margin: 0;\n    padding: 0;\n    list-style-type: none;\n}\n.p-tree-wrapper {\n    overflow: auto;\n}\n.p-treenode-selectable {\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.p-tree-toggler {\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    overflow: hidden;\n    position: relative;\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n}\n.p-treenode-leaf > .p-treenode-content .p-tree-toggler {\n    visibility: hidden;\n}\n.p-treenode-content {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.p-tree-filter {\n    width: 100%;\n}\n.p-tree-filter-container {\n    position: relative;\n    display: block;\n    width: 100%;\n}\n.p-tree-filter-icon {\n    position: absolute;\n    top: 50%;\n    margin-top: -.5rem;\n}\n.p-tree-loading {\n    position: relative;\n    min-height: 4rem;\n}\n.p-tree .p-tree-loading-overlay {\n    position: absolute;\n    z-index: 1;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.p-tree-flex-scrollable {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    height: 100%;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-tree-flex-scrollable .p-tree-wrapper {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n}\n";
+    var css_248z = "\n.p-tree-container {\r\n    margin: 0;\r\n    padding: 0;\r\n    list-style-type: none;\r\n    overflow: auto;\n}\n.p-treenode-children {\r\n    margin: 0;\r\n    padding: 0;\r\n    list-style-type: none;\n}\n.p-tree-wrapper {\r\n    overflow: auto;\n}\n.p-treenode-selectable {\r\n    cursor: pointer;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\n}\n.p-tree-toggler {\r\n    cursor: pointer;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    overflow: hidden;\r\n    position: relative;\r\n    -ms-flex-negative: 0;\r\n        flex-shrink: 0;\n}\n.p-treenode-leaf > .p-treenode-content .p-tree-toggler {\r\n    visibility: hidden;\n}\n.p-treenode-content {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\n}\n.p-tree-filter {\r\n    width: 100%;\n}\n.p-tree-filter-container {\r\n    position: relative;\r\n    display: block;\r\n    width: 100%;\n}\n.p-tree-filter-icon {\r\n    position: absolute;\r\n    top: 50%;\r\n    margin-top: -.5rem;\n}\n.p-tree-loading {\r\n    position: relative;\r\n    min-height: 4rem;\n}\n.p-tree .p-tree-loading-overlay {\r\n    position: absolute;\r\n    z-index: 1;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\n}\n.p-tree-flex-scrollable {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1;\r\n            flex: 1;\r\n    height: 100%;\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-tree-flex-scrollable .p-tree-wrapper {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1;\r\n            flex: 1;\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;
@@ -7329,9 +7645,12 @@ this.primevue.menu = (function (utils, OverlayEventBus, Ripple, vue, Portal) {
                             class: vue.normalizeClass($options.linkClass($props.item, {isActive, isExactActive})),
                             role: "menuitem"
                           }, [
-                            vue.createElementVNode("span", {
-                              class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
-                            }, null, 2),
+                            ($props.item.icon)
+                              ? (vue.openBlock(), vue.createElementBlock("span", {
+                                  key: 0,
+                                  class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
+                                }, null, 2))
+                              : vue.createCommentVNode("", true),
                             vue.createElementVNode("span", _hoisted_2$1, vue.toDisplayString($options.label()), 1)
                           ], 10, _hoisted_1$1)), [
                             [_directive_ripple]
@@ -7348,9 +7667,12 @@ this.primevue.menu = (function (utils, OverlayEventBus, Ripple, vue, Portal) {
                         role: "menuitem",
                         tabindex: $options.disabled($props.item) ? null : '0'
                       }, [
-                        vue.createElementVNode("span", {
-                          class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
-                        }, null, 2),
+                        ($props.item.icon)
+                          ? (vue.openBlock(), vue.createElementBlock("span", {
+                              key: 0,
+                              class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
+                            }, null, 2))
+                          : vue.createCommentVNode("", true),
                         vue.createElementVNode("span", _hoisted_4, vue.toDisplayString($options.label()), 1)
                       ], 10, _hoisted_3)), [
                         [_directive_ripple]
@@ -7790,7 +8112,7 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                     if (this.activeItem && item === this.activeItem)
                         this.activeItem = null;
                     else
-                       this.activeItem = item;
+                        this.activeItem = item;
                 }
 
                 if (!item.items) {
@@ -7929,7 +8251,7 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
     const _hoisted_4 = ["href", "target", "aria-haspopup", "aria-expanded", "onClick", "onKeydown", "tabindex"];
     const _hoisted_5 = { class: "p-menuitem-text" };
     const _hoisted_6 = {
-      key: 0,
+      key: 1,
       class: "p-submenu-icon pi pi-angle-right"
     };
 
@@ -7972,9 +8294,12 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                                   onKeydown: $event => ($options.onItemKeyDown($event, item)),
                                   role: "menuitem"
                                 }, [
-                                  vue.createElementVNode("span", {
-                                    class: vue.normalizeClass(['p-menuitem-icon', item.icon])
-                                  }, null, 2),
+                                  (item.icon)
+                                    ? (vue.openBlock(), vue.createElementBlock("span", {
+                                        key: 0,
+                                        class: vue.normalizeClass(['p-menuitem-icon', item.icon])
+                                      }, null, 2))
+                                    : vue.createCommentVNode("", true),
                                   vue.createElementVNode("span", _hoisted_3, vue.toDisplayString($options.label(item)), 1)
                                 ], 42, _hoisted_2)), [
                                   [_directive_ripple]
@@ -7994,9 +8319,12 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                               role: "menuitem",
                               tabindex: $options.disabled(item) ? null : '0'
                             }, [
-                              vue.createElementVNode("span", {
-                                class: vue.normalizeClass(['p-menuitem-icon', item.icon])
-                              }, null, 2),
+                              (item.icon)
+                                ? (vue.openBlock(), vue.createElementBlock("span", {
+                                    key: 0,
+                                    class: vue.normalizeClass(['p-menuitem-icon', item.icon])
+                                  }, null, 2))
+                                : vue.createCommentVNode("", true),
                               vue.createElementVNode("span", _hoisted_5, vue.toDisplayString($options.label(item)), 1),
                               (item.items)
                                 ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_6))

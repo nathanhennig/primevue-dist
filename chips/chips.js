@@ -4,8 +4,7 @@ this.primevue.chips = (function (vue) {
 
     var script = {
         name: 'Chips',
-        inheritAttrs: false,
-        emits: ['update:modelValue', 'add', 'remove'],
+        emits: ['update:modelValue', 'add', 'remove', 'focus', 'blur'],
         props: {
             modelValue: {
                 type: Array,
@@ -27,13 +26,28 @@ this.primevue.chips = (function (vue) {
                 type: Boolean,
                 default: true
             },
-            class: null,
-            style: null
+            inputId: null,
+            inputClass: null,
+            inputStyle: null,
+            inputProps: null,
+            disabled: {
+                type: Boolean,
+                default: false
+            },
+            'aria-labelledby': {
+                type: String,
+    			default: null
+            },
+            'aria-label': {
+                type: String,
+                default: null
+            }
         },
         data() {
             return {
                 inputValue: null,
-                focused: false
+                focused: false,
+                focusedIndex: null
             };
         },
         methods: {
@@ -43,36 +57,55 @@ this.primevue.chips = (function (vue) {
             onInput(event) {
                 this.inputValue = event.target.value;
             },
-            onFocus() {
+            onFocus(event) {
                 this.focused = true;
+                this.$emit('focus', event);
             },
             onBlur(event) {
                 this.focused = false;
+                this.focusedIndex = null;
                 if (this.addOnBlur) {
                     this.addItem(event, event.target.value, false);
                 }
+                this.$emit('blur', event);
             },
             onKeyDown(event) {
                 const inputValue = event.target.value;
 
-                switch(event.which) {
-                    //backspace
-                    case 8:
+                switch(event.code) {
+                    case 'Backspace':
                         if (inputValue.length === 0 && this.modelValue && this.modelValue.length > 0) {
-                            this.removeItem(event, this.modelValue.length - 1);
+                            if (this.focusedIndex !== null) {
+                                this.removeItem(event, this.focusedIndex);
+                            }
+                            else this.removeItem(event, this.modelValue.length - 1);
                         }
+
                     break;
 
-                    //enter
-                    case 13:
+                    case 'Enter':
                         if (inputValue && inputValue.trim().length && !this.maxedOut) {
                             this.addItem(event, inputValue, true);
                         }
                     break;
 
+                    case 'ArrowLeft':
+                        if (inputValue.length === 0 && this.modelValue && this.modelValue.length > 0) {
+                            if (this.focusedIndex === 0 || this.focusedIndex === null) this.focusedIndex = this.modelValue.length-1;
+                            else this.focusedIndex--;
+                        }
+                    break;
+
+                    case 'ArrowRight':
+                        if (inputValue.length === 0 && this.modelValue && this.modelValue.length > 0) {
+                            if (this.focusedIndex === null || this.focusedIndex === this.modelValue.length-1) this.focusedIndex = 0;
+                            else this.focusedIndex++;
+                        }
+                    break;
+
                     default:
                         if (this.separator) {
-                            if (this.separator === ',' && (event.which === 188 || event.which === 110)) {
+                            if (this.separator === ',' && event.key === ',') {
                                 this.addItem(event, inputValue, true);
                             }
                         }
@@ -114,12 +147,13 @@ this.primevue.chips = (function (vue) {
                 }
             },
             removeItem(event, index) {
-                if (this.$attrs.disabled) {
+                if (this.disabled) {
                     return;
                 }
 
                 let values = [...this.modelValue];
                 const removedItem = values.splice(index, 1);
+                if (values.length === 0) this.focusedIndex = null;
                 this.$emit('update:modelValue', values);
                 this.$emit('remove', {
                     originalEvent: event,
@@ -132,7 +166,7 @@ this.primevue.chips = (function (vue) {
                 return this.max && this.modelValue && this.max === this.modelValue.length;
             },
             containerClass() {
-                return ['p-chips p-component p-inputwrapper', this.class, {
+                return ['p-chips p-component p-inputwrapper', {
                     'p-inputwrapper-filled': ((this.modelValue && this.modelValue.length) || (this.inputValue && this.inputValue.length)),
                     'p-inputwrapper-focus': this.focused
                 }];
@@ -143,46 +177,55 @@ this.primevue.chips = (function (vue) {
     const _hoisted_1 = { class: "p-chips-token-label" };
     const _hoisted_2 = ["onClick"];
     const _hoisted_3 = { class: "p-chips-input-token" };
-    const _hoisted_4 = ["disabled"];
+    const _hoisted_4 = ["id", "disabled", "aria-labelledby", "aria-label"];
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
       return (vue.openBlock(), vue.createElementBlock("div", {
-        class: vue.normalizeClass($options.containerClass),
-        style: vue.normalizeStyle($props.style)
+        class: vue.normalizeClass($options.containerClass)
       }, [
         vue.createElementVNode("ul", {
-          class: vue.normalizeClass(['p-inputtext p-chips-multiple-container', {'p-disabled': _ctx.$attrs.disabled, 'p-focus': $data.focused}]),
+          class: vue.normalizeClass(['p-inputtext p-chips-multiple-container', {'p-disabled': $props.disabled, 'p-focus': $data.focused}]),
+          role: "listbox",
+          "aria-orientation": "horizontal",
           onClick: _cache[5] || (_cache[5] = $event => ($options.onWrapperClick()))
         }, [
           (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.modelValue, (val, i) => {
             return (vue.openBlock(), vue.createElementBlock("li", {
               key: `${i}_${val}`,
-              class: "p-chips-token"
+              role: "option",
+              class: vue.normalizeClass(['p-chips-token', {'p-focus': $data.focusedIndex === i}])
             }, [
-              vue.renderSlot(_ctx.$slots, "chip", { value: val }, () => [
+              vue.renderSlot(_ctx.$slots, "chip", {
+                value: val,
+                ariaLabel: val
+              }, () => [
                 vue.createElementVNode("span", _hoisted_1, vue.toDisplayString(val), 1)
               ]),
               vue.createElementVNode("span", {
                 class: "p-chips-token-icon pi pi-times-circle",
                 onClick: $event => ($options.removeItem($event, i))
               }, null, 8, _hoisted_2)
-            ]))
+            ], 2))
           }), 128)),
           vue.createElementVNode("li", _hoisted_3, [
             vue.createElementVNode("input", vue.mergeProps({
               ref: "input",
-              type: "text"
-            }, _ctx.$attrs, {
-              onFocus: _cache[0] || (_cache[0] = (...args) => ($options.onFocus && $options.onFocus(...args))),
+              type: "text",
+              id: $props.inputId,
+              class: $props.inputClass,
+              style: $props.inputStyle,
+              disabled: $props.disabled || $options.maxedOut,
+              "aria-labelledby": _ctx.ariaLabelledby,
+              "aria-label": _ctx.ariaLabel,
+              onFocus: _cache[0] || (_cache[0] = $event => ($options.onFocus($event))),
               onBlur: _cache[1] || (_cache[1] = $event => ($options.onBlur($event))),
               onInput: _cache[2] || (_cache[2] = (...args) => ($options.onInput && $options.onInput(...args))),
               onKeydown: _cache[3] || (_cache[3] = $event => ($options.onKeyDown($event))),
-              onPaste: _cache[4] || (_cache[4] = $event => ($options.onPaste($event))),
-              disabled: _ctx.$attrs.disabled || $options.maxedOut
-            }), null, 16, _hoisted_4)
+              onPaste: _cache[4] || (_cache[4] = $event => ($options.onPaste($event)))
+            }, $props.inputProps), null, 16, _hoisted_4)
           ])
         ], 2)
-      ], 6))
+      ], 2))
     }
 
     function styleInject(css, ref) {
@@ -212,7 +255,7 @@ this.primevue.chips = (function (vue) {
       }
     }
 
-    var css_248z = "\n.p-chips {\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n}\n.p-chips-multiple-container {\n    margin: 0;\n    padding: 0;\n    list-style-type: none;\n    cursor: text;\n    overflow: hidden;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -ms-flex-wrap: wrap;\n        flex-wrap: wrap;\n}\n.p-chips-token {\n    cursor: default;\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-flex: 0;\n        -ms-flex: 0 0 auto;\n            flex: 0 0 auto;\n}\n.p-chips-input-token {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n}\n.p-chips-token-icon {\n    cursor: pointer;\n}\n.p-chips-input-token input {\n    border: 0 none;\n    outline: 0 none;\n    background-color: transparent;\n    margin: 0;\n    padding: 0;\n    -webkit-box-shadow: none;\n            box-shadow: none;\n    border-radius: 0;\n    width: 100%;\n}\n.p-fluid .p-chips {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n";
+    var css_248z = "\n.p-chips {\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\n}\n.p-chips-multiple-container {\r\n    margin: 0;\r\n    padding: 0;\r\n    list-style-type: none;\r\n    cursor: text;\r\n    overflow: hidden;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -ms-flex-wrap: wrap;\r\n        flex-wrap: wrap;\n}\n.p-chips-token {\r\n    cursor: default;\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-flex: 0;\r\n        -ms-flex: 0 0 auto;\r\n            flex: 0 0 auto;\n}\n.p-chips-input-token {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\n}\n.p-chips-token-icon {\r\n    cursor: pointer;\n}\n.p-chips-input-token input {\r\n    border: 0 none;\r\n    outline: 0 none;\r\n    background-color: transparent;\r\n    margin: 0;\r\n    padding: 0;\r\n    -webkit-box-shadow: none;\r\n            box-shadow: none;\r\n    border-radius: 0;\r\n    width: 100%;\n}\n.p-fluid .p-chips {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\n}\n.p-chips .p-chips-multiple-container .p-chips-token.p-focus {\r\n    background-color: var(--primary-color);\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;

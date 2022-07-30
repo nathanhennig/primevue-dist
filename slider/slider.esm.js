@@ -30,9 +30,17 @@ var script = {
 			type: Boolean,
 			default: false
         },
-        ariaLabelledBy: {
+        tabindex: {
+            type: Number,
+            default: 0
+        },
+        'aria-labelledby': {
             type: String,
 			default: null
+        },
+        'aria-label': {
+            type: String,
+            default: null
         }
     },
     dragging: false,
@@ -163,38 +171,41 @@ var script = {
         },
         onKeyDown(event, index) {
             this.handleIndex = index;
-            switch (event.which) {
-                //down
-                case 40:
-                    if (this.vertical) {
-                        this.decrementValue(event, index);
-                        event.preventDefault();
-                    }
+            switch (event.code) {
+                case 'ArrowDown':
+                case 'ArrowLeft':
+                    this.decrementValue(event, index);
+                    event.preventDefault();
                 break;
-                //up
-                case 38:
-                    if (this.vertical) {
-                        this.incrementValue(event, index);
-                        event.preventDefault();
-                    }
+
+                case 'ArrowUp':
+                case 'ArrowRight':
+                    this.incrementValue(event, index);
+                    event.preventDefault();
                 break;
-                //left
-                case 37:
-                    if (this.horizontal) {
-                        this.decrementValue(event, index);
-                        event.preventDefault();
-                    }
+
+                case 'PageDown':
+                    this.decrementValue(event, index, true);
+                    event.preventDefault();
                 break;
-                //right
-                case 39:
-                    if (this.horizontal) {
-                        this.incrementValue(event, index);
-                        event.preventDefault();
-                    }
+
+                case 'PageUp':
+                    this.incrementValue(event, index, true);
+                    event.preventDefault();
+                break;
+
+                case 'Home':
+                    this.updateModel(event, this.min);
+                    event.preventDefault();
+                break;
+
+                case 'End':
+                    this.updateModel(event, this.max);
+                    event.preventDefault();
                 break;
             }
         },
-        decrementValue(event, index) {
+        decrementValue(event, index, pageKey = false) {
             let newValue;
             if (this.range) {
                 if (this.step)
@@ -205,13 +216,15 @@ var script = {
             else {
                 if (this.step)
                     newValue = this.modelValue - this.step;
+                else if (!this.step && pageKey)
+                    newValue = this.modelValue - 10;
                 else
                     newValue = this.modelValue - 1;
             }
             this.updateModel(event, newValue);
             event.preventDefault();
         },
-        incrementValue(event, index) {
+        incrementValue(event, index, pageKey = false) {
             let newValue;
             if (this.range) {
                 if (this.step)
@@ -222,6 +235,8 @@ var script = {
             else {
                 if (this.step)
                     newValue = this.modelValue + this.step;
+                else if (!this.step && pageKey)
+                    newValue = this.modelValue + 10;
                 else
                     newValue = this.modelValue + 1;
             }
@@ -318,9 +333,9 @@ var script = {
     }
 };
 
-const _hoisted_1 = ["aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby"];
-const _hoisted_2 = ["aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby"];
-const _hoisted_3 = ["aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby"];
+const _hoisted_1 = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
+const _hoisted_2 = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
+const _hoisted_3 = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (openBlock(), createElementBlock("div", {
@@ -341,12 +356,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           onTouchend: _cache[2] || (_cache[2] = $event => ($options.onDragEnd($event))),
           onMousedown: _cache[3] || (_cache[3] = $event => ($options.onMouseDown($event))),
           onKeydown: _cache[4] || (_cache[4] = $event => ($options.onKeyDown($event))),
-          tabindex: "0",
+          tabindex: $props.tabindex,
           role: "slider",
           "aria-valuemin": $props.min,
           "aria-valuenow": $props.modelValue,
           "aria-valuemax": $props.max,
-          "aria-labelledby": $props.ariaLabelledBy
+          "aria-labelledby": _ctx.ariaLabelledby,
+          "aria-label": _ctx.ariaLabel,
+          "aria-orientation": $props.orientation
         }, null, 44, _hoisted_1))
       : createCommentVNode("", true),
     ($props.range)
@@ -359,12 +376,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           onTouchend: _cache[7] || (_cache[7] = $event => ($options.onDragEnd($event))),
           onMousedown: _cache[8] || (_cache[8] = $event => ($options.onMouseDown($event, 0))),
           onKeydown: _cache[9] || (_cache[9] = $event => ($options.onKeyDown($event))),
-          tabindex: "0",
+          tabindex: $props.tabindex,
           role: "slider",
           "aria-valuemin": $props.min,
           "aria-valuenow": $props.modelValue ? $props.modelValue[0] : null,
           "aria-valuemax": $props.max,
-          "aria-labelledby": $props.ariaLabelledBy
+          "aria-labelledby": _ctx.ariaLabelledby,
+          "aria-label": _ctx.ariaLabel,
+          "aria-orientation": $props.orientation
         }, null, 44, _hoisted_2))
       : createCommentVNode("", true),
     ($props.range)
@@ -377,12 +396,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           onTouchend: _cache[12] || (_cache[12] = $event => ($options.onDragEnd($event))),
           onMousedown: _cache[13] || (_cache[13] = $event => ($options.onMouseDown($event, 1))),
           onKeydown: _cache[14] || (_cache[14] = $event => ($options.onKeyDown($event, 1))),
-          tabindex: "0",
+          tabindex: $props.tabindex,
           role: "slider",
           "aria-valuemin": $props.min,
           "aria-valuenow": $props.modelValue ? $props.modelValue[1] : null,
           "aria-valuemax": $props.max,
-          "aria-labelledby": $props.ariaLabelledBy
+          "aria-labelledby": _ctx.ariaLabelledby,
+          "aria-label": _ctx.ariaLabel,
+          "aria-orientation": $props.orientation
         }, null, 44, _hoisted_3))
       : createCommentVNode("", true)
   ], 2))
@@ -415,7 +436,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-slider {\n\tposition: relative;\n}\n.p-slider .p-slider-handle {\n\tposition: absolute;\n\tcursor: -webkit-grab;\n\tcursor: grab;\n    -ms-touch-action: none;\n        touch-action: none;\n    display: block;\n}\n.p-slider-range {\n\tposition: absolute;\n    display: block;\n}\n.p-slider-horizontal .p-slider-range {\n    top: 0;\n    left: 0;\n\theight: 100%;\n}\n.p-slider-horizontal .p-slider-handle {\n    top: 50%;\n}\n.p-slider-vertical {\n\theight: 100px;\n}\n.p-slider-vertical .p-slider-handle {\n    left: 50%;\n}\n.p-slider-vertical .p-slider-range {\n    bottom: 0;\n    left: 0;\n    width: 100%;\n}\n";
+var css_248z = "\n.p-slider {\r\n\tposition: relative;\n}\n.p-slider .p-slider-handle {\r\n\tposition: absolute;\r\n\tcursor: -webkit-grab;\r\n\tcursor: grab;\r\n    -ms-touch-action: none;\r\n        touch-action: none;\r\n    display: block;\n}\n.p-slider-range {\r\n\tposition: absolute;\r\n    display: block;\n}\n.p-slider-horizontal .p-slider-range {\r\n    top: 0;\r\n    left: 0;\r\n\theight: 100%;\n}\n.p-slider-horizontal .p-slider-handle {\r\n    top: 50%;\n}\n.p-slider-vertical {\r\n\theight: 100px;\n}\n.p-slider-vertical .p-slider-handle {\r\n    left: 50%;\n}\n.p-slider-vertical .p-slider-range {\r\n    bottom: 0;\r\n    left: 0;\r\n    width: 100%;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

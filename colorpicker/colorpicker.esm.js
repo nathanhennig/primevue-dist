@@ -39,10 +39,6 @@ var script = {
             type: Number,
             default: 0
         },
-        ariaLabelledBy: {
-            type: String,
-            default: null
-        },
         appendTo: {
             type: String,
             default: 'body'
@@ -552,7 +548,7 @@ var script = {
     }
 };
 
-const _hoisted_1 = ["tabindex", "disabled", "aria-labelledby"];
+const _hoisted_1 = ["tabindex", "disabled"];
 const _hoisted_2 = { class: "p-colorpicker-content" };
 const _hoisted_3 = { class: "p-colorpicker-color" };
 
@@ -573,8 +569,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           tabindex: $props.tabindex,
           disabled: $props.disabled,
           onClick: _cache[0] || (_cache[0] = (...args) => ($options.onInputClick && $options.onInputClick(...args))),
-          onKeydown: _cache[1] || (_cache[1] = (...args) => ($options.onInputKeydown && $options.onInputKeydown(...args))),
-          "aria-labelledby": $props.ariaLabelledBy
+          onKeydown: _cache[1] || (_cache[1] = (...args) => ($options.onInputKeydown && $options.onInputKeydown(...args)))
         }, null, 42, _hoisted_1))
       : createCommentVNode("", true),
     createVNode(_component_Portal, {
@@ -664,7 +659,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-colorpicker {\n    display: inline-block;\n}\n.p-colorpicker-dragging {\n    cursor: pointer;\n}\n.p-colorpicker-overlay {\n    position: relative;\n}\n.p-colorpicker-panel {\n    position: relative;\n    width: 193px;\n    height: 166px;\n}\n.p-colorpicker-overlay-panel {\n    position: absolute;\n    top: 0;\n    left: 0;\n}\n.p-colorpicker-preview {\n    cursor: pointer;\n}\n.p-colorpicker-panel .p-colorpicker-content {\n    position: relative;\n}\n.p-colorpicker-panel .p-colorpicker-color-selector {\n    width: 150px;\n    height: 150px;\n    top: 8px;\n    left: 8px;\n    position: absolute;\n}\n.p-colorpicker-panel .p-colorpicker-color {\n     width: 150px;\n     height: 150px;\n}\n.p-colorpicker-panel .p-colorpicker-color-handle {\n     position: absolute;\n     top: 0px;\n     left: 150px;\n     border-radius: 100%;\n     width: 10px;\n     height: 10px;\n     border-width: 1px;\n     border-style: solid;\n     margin: -5px 0 0 -5px;\n     cursor: pointer;\n     opacity: .85;\n}\n.p-colorpicker-panel .p-colorpicker-hue {\n    width: 17px;\n    height: 150px;\n    top: 8px;\n    left: 167px;\n    position: absolute;\n    opacity: .85;\n}\n.p-colorpicker-panel .p-colorpicker-hue-handle {\n     position: absolute;\n     top: 150px;\n     left: 0px;\n     width: 21px;\n     margin-left: -2px;\n     margin-top: -5px;\n     height: 10px;\n     border-width: 2px;\n     border-style: solid;\n     opacity: .85;\n     cursor: pointer;\n}\n";
+var css_248z = "\n.p-colorpicker {\r\n    display: inline-block;\n}\n.p-colorpicker-dragging {\r\n    cursor: pointer;\n}\n.p-colorpicker-overlay {\r\n    position: relative;\n}\n.p-colorpicker-panel {\r\n    position: relative;\r\n    width: 193px;\r\n    height: 166px;\n}\n.p-colorpicker-overlay-panel {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\n}\n.p-colorpicker-preview {\r\n    cursor: pointer;\n}\n.p-colorpicker-panel .p-colorpicker-content {\r\n    position: relative;\n}\n.p-colorpicker-panel .p-colorpicker-color-selector {\r\n    width: 150px;\r\n    height: 150px;\r\n    top: 8px;\r\n    left: 8px;\r\n    position: absolute;\n}\n.p-colorpicker-panel .p-colorpicker-color {\r\n     width: 150px;\r\n     height: 150px;\n}\n.p-colorpicker-panel .p-colorpicker-color-handle {\r\n     position: absolute;\r\n     top: 0px;\r\n     left: 150px;\r\n     border-radius: 100%;\r\n     width: 10px;\r\n     height: 10px;\r\n     border-width: 1px;\r\n     border-style: solid;\r\n     margin: -5px 0 0 -5px;\r\n     cursor: pointer;\r\n     opacity: .85;\n}\n.p-colorpicker-panel .p-colorpicker-hue {\r\n    width: 17px;\r\n    height: 150px;\r\n    top: 8px;\r\n    left: 167px;\r\n    position: absolute;\r\n    opacity: .85;\n}\n.p-colorpicker-panel .p-colorpicker-hue-handle {\r\n     position: absolute;\r\n     top: 150px;\r\n     left: 0px;\r\n     width: 21px;\r\n     margin-left: -2px;\r\n     margin-top: -5px;\r\n     height: 10px;\r\n     border-width: 2px;\r\n     border-style: solid;\r\n     opacity: .85;\r\n     cursor: pointer;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

@@ -25,6 +25,8 @@ var script = {
     dragging: false,
     mouseMoveListener: null,
     mouseUpListener: null,
+    touchMoveListener: null,
+    touchEndListener: null,
     size: null,
     gutterElement: null,
     startPos: null,
@@ -68,7 +70,7 @@ var script = {
             this.gutterElement = event.currentTarget;
             this.size = this.horizontal ? DomHandler.getWidth(this.$el) : DomHandler.getHeight(this.$el);
             this.dragging = true;
-            this.startPos = this.layout === 'horizontal' ? event.pageX : event.pageY;
+            this.startPos = this.layout === 'horizontal' ? (event.pageX || event.changedTouches[0].pageX) : (event.pageY || event.changedTouches[0].pageY);
             this.prevPanelElement = this.gutterElement.previousElementSibling;
             this.nextPanelElement = this.gutterElement.nextElementSibling;
             this.prevPanelSize = 100 * (this.horizontal ? DomHandler.getOuterWidth(this.prevPanelElement, true): DomHandler.getOuterHeight(this.prevPanelElement, true)) / this.size;
@@ -110,6 +112,7 @@ var script = {
         },
         onGutterTouchStart(event, index) {
             this.onResizeStart(event, index);
+            this.bindTouchListeners();
             event.preventDefault();
         },
         onGutterTouchMove(event) {
@@ -118,6 +121,7 @@ var script = {
         },
         onGutterTouchEnd(event) {
             this.onResizeEnd(event);
+            this.unbindTouchListeners();
             event.preventDefault();
         },
         bindMouseListeners() {
@@ -132,6 +136,20 @@ var script = {
                     this.unbindMouseListeners();
                 };
                 document.addEventListener('mouseup', this.mouseUpListener);
+            }
+        },
+        bindTouchListeners() {
+            if (!this.touchMoveListener) {
+                this.touchMoveListener = event => this.onResize(event.changedTouches[0]);
+                document.addEventListener('touchmove', this.touchMoveListener);
+            }
+
+            if (!this.touchEndListener) {
+                this.touchEndListener = event => {
+                    this.resizeEnd(event);
+                    this.unbindTouchListeners();
+                };
+                document.addEventListener('touchend', this.touchEndListener);
             }
         },
         validateResize(newPrevPanelSize, newNextPanelSize) {
@@ -156,6 +174,17 @@ var script = {
             if (this.mouseUpListener) {
                 document.removeEventListener('mouseup', this.mouseUpListener);
                 this.mouseUpListener = null;
+            }
+        },
+        unbindTouchListeners() {
+            if (this.touchMoveListener) {
+                document.removeEventListener('touchmove', this.touchMoveListener);
+                this.touchMoveListener = null;
+            }
+
+            if (this.touchEndListener) {
+                document.removeEventListener('touchend', this.touchEndListener);
+                this.touchEndListener = null;
             }
         },
         clear() {
@@ -293,7 +322,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-splitter {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-wrap: nowrap;\n        flex-wrap: nowrap;\n}\n.p-splitter-vertical {\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-splitter-panel {\n    -webkit-box-flex: 1;\n        -ms-flex-positive: 1;\n            flex-grow: 1;\n}\n.p-splitter-panel-nested {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n.p-splitter-panel .p-splitter {\n    -webkit-box-flex: 1;\n        -ms-flex-positive: 1;\n            flex-grow: 1;\n    border: 0 none;\n}\n.p-splitter-gutter {\n    -webkit-box-flex: 0;\n        -ms-flex-positive: 0;\n            flex-grow: 0;\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    cursor: col-resize;\n}\n.p-splitter-horizontal.p-splitter-resizing {\n    cursor: col-resize;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.p-splitter-horizontal > .p-splitter-gutter > .p-splitter-gutter-handle {\n    height: 24px;\n    width: 100%;\n}\n.p-splitter-horizontal > .p-splitter-gutter {\n    cursor: col-resize;\n}\n.p-splitter-vertical.p-splitter-resizing {\n    cursor: row-resize;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.p-splitter-vertical > .p-splitter-gutter {\n    cursor: row-resize;\n}\n.p-splitter-vertical > .p-splitter-gutter > .p-splitter-gutter-handle {\n    width: 24px;\n    height: 100%;\n}\n";
+var css_248z = "\n.p-splitter {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: nowrap;\r\n        flex-wrap: nowrap;\n}\n.p-splitter-vertical {\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-splitter-panel {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex-positive: 1;\r\n            flex-grow: 1;\n}\n.p-splitter-panel-nested {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\n}\n.p-splitter-panel .p-splitter {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex-positive: 1;\r\n            flex-grow: 1;\r\n    border: 0 none;\n}\n.p-splitter-gutter {\r\n    -webkit-box-flex: 0;\r\n        -ms-flex-positive: 0;\r\n            flex-grow: 0;\r\n    -ms-flex-negative: 0;\r\n        flex-shrink: 0;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    cursor: col-resize;\n}\n.p-splitter-horizontal.p-splitter-resizing {\r\n    cursor: col-resize;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\n}\n.p-splitter-horizontal > .p-splitter-gutter > .p-splitter-gutter-handle {\r\n    height: 24px;\r\n    width: 100%;\n}\n.p-splitter-horizontal > .p-splitter-gutter {\r\n    cursor: col-resize;\n}\n.p-splitter-vertical.p-splitter-resizing {\r\n    cursor: row-resize;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\n}\n.p-splitter-vertical > .p-splitter-gutter {\r\n    cursor: row-resize;\n}\n.p-splitter-vertical > .p-splitter-gutter > .p-splitter-gutter-handle {\r\n    width: 24px;\r\n    height: 100%;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

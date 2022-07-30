@@ -1,7 +1,7 @@
-import { ObjectUtils, DomHandler, ZIndexUtils, ConnectedOverlayScrollHandler } from 'primevue/utils';
+import { ObjectUtils, DomHandler, ZIndexUtils, ConnectedOverlayScrollHandler, UniqueComponentId } from 'primevue/utils';
 import OverlayEventBus from 'primevue/overlayeventbus';
 import Ripple from 'primevue/ripple';
-import { resolveComponent, resolveDirective, openBlock, createElementBlock, Fragment, renderList, normalizeClass, withDirectives, createBlock, resolveDynamicComponent, toDisplayString, createCommentVNode, createElementVNode, renderSlot, createTextVNode, createVNode, withCtx, Transition } from 'vue';
+import { resolveComponent, resolveDirective, openBlock, createElementBlock, Fragment, renderList, normalizeClass, withDirectives, createBlock, resolveDynamicComponent, toDisplayString, createCommentVNode, createElementVNode, mergeProps, renderSlot, createTextVNode, createVNode, withCtx, Transition } from 'vue';
 import Portal from 'primevue/portal';
 
 var script$1 = {
@@ -99,7 +99,7 @@ var script$1 = {
             return this.activeOption === option;
         },
         onKeyDown(event, option, index) {
-            switch (event.key) {
+            switch (event.code) {
                 case 'Down':
                 case 'ArrowDown':
                     var nextItem = this.$el.children[index + 1];
@@ -139,6 +139,7 @@ var script$1 = {
                 break;
 
                 case 'Enter':
+                case 'Space':
                     this.onOptionClick(event, option);
                 break;
             }
@@ -162,17 +163,14 @@ var script$1 = {
     }
 };
 
-const _hoisted_1$1 = {
-  class: "p-cascadeselect-panel p-cascadeselect-items",
-  role: "listbox",
-  "aria-orientation": "horizontal"
-};
-const _hoisted_2$1 = ["onClick", "onKeydown"];
-const _hoisted_3$1 = {
+const _hoisted_1$1 = ["role"];
+const _hoisted_2$1 = ["aria-label", "aria-selected", "aria-expanded", "aria-setsize", "aria-posinset", "aria-level"];
+const _hoisted_3$1 = ["onClick", "onKeydown"];
+const _hoisted_4$1 = {
   key: 1,
   class: "p-cascadeselect-item-text"
 };
-const _hoisted_4$1 = {
+const _hoisted_5 = {
   key: 2,
   class: "p-cascadeselect-group-icon pi pi-angle-right"
 };
@@ -181,29 +179,39 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_CascadeSelectSub = resolveComponent("CascadeSelectSub", true);
   const _directive_ripple = resolveDirective("ripple");
 
-  return (openBlock(), createElementBlock("ul", _hoisted_1$1, [
-    (openBlock(true), createElementBlock(Fragment, null, renderList($props.options, (option, i) => {
+  return (openBlock(), createElementBlock("ul", {
+    class: "p-cascadeselect-panel p-cascadeselect-items",
+    "aria-orientation": "horizontal",
+    role: $props.root === true ? 'tree' : 'group'
+  }, [
+    (openBlock(true), createElementBlock(Fragment, null, renderList($props.options, (option, index) => {
       return (openBlock(), createElementBlock("li", {
         key: $options.getOptionLabelToRender(option),
         class: normalizeClass($options.getItemClass(option)),
-        role: "none"
+        role: "treeitem",
+        "aria-label": $options.getOptionLabelToRender(option),
+        "aria-selected": $options.isOptionActive(option),
+        "aria-expanded": $options.isOptionActive(option),
+        "aria-setsize": $props.options.length,
+        "aria-posinset": index + 1,
+        "aria-level": $props.level + 1
       }, [
         withDirectives((openBlock(), createElementBlock("div", {
           class: "p-cascadeselect-item-content",
           onClick: $event => ($options.onOptionClick($event, option)),
           tabindex: "0",
-          onKeydown: $event => ($options.onKeyDown($event, option, i))
+          onKeydown: $event => ($options.onKeyDown($event, option, index))
         }, [
           ($props.templates['option'])
             ? (openBlock(), createBlock(resolveDynamicComponent($props.templates['option']), {
                 key: 0,
                 option: option
               }, null, 8, ["option"]))
-            : (openBlock(), createElementBlock("span", _hoisted_3$1, toDisplayString($options.getOptionLabelToRender(option)), 1)),
+            : (openBlock(), createElementBlock("span", _hoisted_4$1, toDisplayString($options.getOptionLabelToRender(option)), 1)),
           ($options.isOptionGroup(option))
-            ? (openBlock(), createElementBlock("span", _hoisted_4$1))
+            ? (openBlock(), createElementBlock("span", _hoisted_5))
             : createCommentVNode("", true)
-        ], 40, _hoisted_2$1)), [
+        ], 40, _hoisted_3$1)), [
           [_directive_ripple]
         ]),
         ($options.isOptionGroup(option) && $options.isOptionActive(option))
@@ -221,19 +229,20 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
               optionGroupChildren: $props.optionGroupChildren,
               parentActive: $options.isOptionActive(option),
               dirty: $props.dirty,
-              templates: $props.templates
-            }, null, 8, ["selectionPath", "options", "optionLabel", "optionValue", "level", "onOptionSelect", "onOptiongroupSelect", "optionGroupLabel", "optionGroupChildren", "parentActive", "dirty", "templates"]))
+              templates: $props.templates,
+              "aria-level": $props.level + 2
+            }, null, 8, ["selectionPath", "options", "optionLabel", "optionValue", "level", "onOptionSelect", "onOptiongroupSelect", "optionGroupLabel", "optionGroupChildren", "parentActive", "dirty", "templates", "aria-level"]))
           : createCommentVNode("", true)
-      ], 2))
+      ], 10, _hoisted_2$1))
     }), 128))
-  ]))
+  ], 8, _hoisted_1$1))
 }
 
 script$1.render = render$1;
 
 var script = {
     name: 'CascadeSelect',
-    emits: ['update:modelValue','change','group-change', 'before-show','before-hide','hide','show'],
+    emits: ['update:modelValue','change','group-change', 'before-show','before-hide','hide','show','focus','blur'],
     data() {
         return {
             selectionPath: null,
@@ -252,14 +261,11 @@ var script = {
         placeholder: String,
 		disabled: Boolean,
         dataKey: null,
-        inputId: String,
         tabindex: String,
-        ariaLabelledBy: null,
         appendTo: {
             type: String,
             default: 'body'
         },
-        panelClass: null,
         loading: {
             type: Boolean,
             default: false
@@ -267,6 +273,20 @@ var script = {
         loadingIcon: {
             type: String,
             default: 'pi pi-spinner pi-spin'
+        },
+        inputId: null,
+        inputClass: null,
+        inputStyle: null,
+        inputProps: null,
+        panelClass: null,
+        panelProps: null,
+        'aria-labelledby': {
+            type: String,
+			default: null
+        },
+        'aria-label': {
+            type: String,
+            default: null
         }
     },
     outsideClickListener: null,
@@ -356,11 +376,13 @@ var script = {
             this.$emit('before-hide');
             this.overlayVisible = false;
         },
-        onFocus() {
+        onFocus(event) {
             this.focused = true;
+            this.$emit('focus', event);
         },
-        onBlur() {
+        onBlur(event) {
             this.focused = false;
+            this.$emit('blur', event);
         },
         onClick(event) {
             if (this.disabled || this.loading) {
@@ -456,27 +478,45 @@ var script = {
             this.overlay = el;
         },
         onKeyDown(event) {
-            switch(event.key) {
+            if (this.disabled || this.loading) {
+                event.preventDefault();
+                return;
+            }
+
+            switch(event.code) {
                 case 'Down':
                 case 'ArrowDown':
                     if (this.overlayVisible) {
-                        DomHandler.findSingle(this.overlay, '.p-cascadeselect-item').children[0].focus();
+                        if (DomHandler.findSingle(this.overlay, '.p-highlight')) {
+                            DomHandler.findSingle(this.overlay, '.p-highlight').focus();
+                        }
+                        else DomHandler.findSingle(this.overlay, '.p-cascadeselect-item').children[0].focus();
                     }
-                    else if (event.altKey && this.options && this.options.length) {
+                    else {
                         this.show();
                     }
+
+                    event.preventDefault();
+                break;
+
+                case 'Space':
+                case 'Enter':
+                    if (this.overlayVisible) {
+                        this.hide();
+                    }
+                    else {
+                        this.show();
+                    }
+
                     event.preventDefault();
                 break;
 
                 case 'Escape':
+                case 'Tab':
                     if (this.overlayVisible) {
                         this.hide();
                         event.preventDefault();
                     }
-                break;
-
-                case 'Tab':
-                    this.hide();
                 break;
             }
         },
@@ -522,6 +562,9 @@ var script = {
         },
         dropdownIconClass() {
             return ['p-cascadeselect-trigger-icon', this.loading ? this.loadingIcon : 'pi pi-chevron-down'];
+        },
+        listId() {
+            return this.overlayVisible ? UniqueComponentId() + '_list' : null;
         }
     },
     components: {
@@ -531,7 +574,7 @@ var script = {
 };
 
 const _hoisted_1 = { class: "p-hidden-accessible" };
-const _hoisted_2 = ["id", "disabled", "tabindex", "aria-expanded", "aria-labelledby"];
+const _hoisted_2 = ["id", "disabled", "tabindex", "aria-labelledby", "aria-label", "aria-expanded", "aria-controls"];
 const _hoisted_3 = ["aria-expanded"];
 const _hoisted_4 = { class: "p-cascadeselect-items-wrapper" };
 
@@ -545,20 +588,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[4] || (_cache[4] = $event => ($options.onClick($event)))
   }, [
     createElementVNode("div", _hoisted_1, [
-      createElementVNode("input", {
+      createElementVNode("input", mergeProps({
         ref: "focusInput",
+        role: "combobox",
         type: "text",
         id: $props.inputId,
+        class: $props.inputClass,
+        style: $props.inputStyle,
         readonly: "",
         disabled: $props.disabled,
+        tabindex: $props.tabindex,
+        "aria-labelledby": _ctx.ariaLabelledby,
+        "aria-label": _ctx.ariaLabel,
+        "aria-haspopup": "tree",
+        "aria-expanded": $data.overlayVisible,
+        "aria-controls": $options.listId,
         onFocus: _cache[0] || (_cache[0] = (...args) => ($options.onFocus && $options.onFocus(...args))),
         onBlur: _cache[1] || (_cache[1] = (...args) => ($options.onBlur && $options.onBlur(...args))),
-        onKeydown: _cache[2] || (_cache[2] = (...args) => ($options.onKeyDown && $options.onKeyDown(...args))),
-        tabindex: $props.tabindex,
-        "aria-haspopup": "listbox",
-        "aria-expanded": $data.overlayVisible,
-        "aria-labelledby": $props.ariaLabelledBy
-      }, null, 40, _hoisted_2)
+        onKeydown: _cache[2] || (_cache[2] = (...args) => ($options.onKeyDown && $options.onKeyDown(...args)))
+      }, $props.inputProps), null, 16, _hoisted_2)
     ]),
     createElementVNode("span", {
       class: normalizeClass($options.labelClass)
@@ -573,7 +621,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     createElementVNode("div", {
       class: "p-cascadeselect-trigger",
       role: "button",
-      "aria-haspopup": "listbox",
+      "aria-haspopup": "tree",
       "aria-expanded": $data.overlayVisible
     }, [
       renderSlot(_ctx.$slots, "indicator", {}, () => [
@@ -592,14 +640,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }, {
           default: withCtx(() => [
             ($data.overlayVisible)
-              ? (openBlock(), createElementBlock("div", {
+              ? (openBlock(), createElementBlock("div", mergeProps({
                   key: 0,
                   ref: $options.overlayRef,
-                  class: normalizeClass($options.panelStyleClass),
+                  class: $options.panelStyleClass,
                   onClick: _cache[3] || (_cache[3] = (...args) => ($options.onOverlayClick && $options.onOverlayClick(...args)))
-                }, [
+                }, $props.panelProps), [
                   createElementVNode("div", _hoisted_4, [
                     createVNode(_component_CascadeSelectSub, {
+                      id: $options.listId,
                       options: $props.options,
                       selectionPath: $data.selectionPath,
                       optionLabel: $props.optionLabel,
@@ -612,9 +661,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                       onOptiongroupSelect: $options.onOptionGroupSelect,
                       dirty: $data.dirty,
                       root: true
-                    }, null, 8, ["options", "selectionPath", "optionLabel", "optionValue", "templates", "optionGroupLabel", "optionGroupChildren", "onOptionSelect", "onOptiongroupSelect", "dirty"])
+                    }, null, 8, ["id", "options", "selectionPath", "optionLabel", "optionValue", "templates", "optionGroupLabel", "optionGroupChildren", "onOptionSelect", "onOptiongroupSelect", "dirty"])
                   ])
-                ], 2))
+                ], 16))
               : createCommentVNode("", true)
           ]),
           _: 1
@@ -652,7 +701,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-cascadeselect {\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    cursor: pointer;\n    position: relative;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.p-cascadeselect-trigger {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n}\n.p-cascadeselect-label {\n    display: block;\n    white-space: nowrap;\n    overflow: hidden;\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n    width: 1%;\n    text-overflow: ellipsis;\n    cursor: pointer;\n}\n.p-cascadeselect-label-empty {\n    overflow: hidden;\n    visibility: hidden;\n}\n.p-cascadeselect .p-cascadeselect-panel {\n    min-width: 100%;\n}\n.p-cascadeselect-panel {\n    position: absolute;\n    top: 0;\n    left: 0;\n}\n.p-cascadeselect-item {\n    cursor: pointer;\n    font-weight: normal;\n    white-space: nowrap;\n}\n.p-cascadeselect-item-content {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    overflow: hidden;\n    position: relative;\n}\n.p-cascadeselect-group-icon {\n    margin-left: auto;\n}\n.p-cascadeselect-items {\n    margin: 0;\n    padding: 0;\n    list-style-type: none;\n    min-width: 100%;\n}\n.p-fluid .p-cascadeselect {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n.p-fluid .p-cascadeselect .p-cascadeselect-label {\n    width: 1%;\n}\n.p-cascadeselect-sublist {\n    position: absolute;\n    min-width: 100%;\n    z-index: 1;\n    display: none;\n}\n.p-cascadeselect-item-active {\n    overflow: visible !important;\n}\n.p-cascadeselect-item-active > .p-cascadeselect-sublist {\n    display: block;\n    left: 100%;\n    top: 0;\n}\n";
+var css_248z = "\n.p-cascadeselect {\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\r\n    cursor: pointer;\r\n    position: relative;\r\n    -webkit-user-select: none;\r\n       -moz-user-select: none;\r\n        -ms-user-select: none;\r\n            user-select: none;\n}\n.p-cascadeselect-trigger {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -ms-flex-negative: 0;\r\n        flex-shrink: 0;\n}\n.p-cascadeselect-label {\r\n    display: block;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\r\n    width: 1%;\r\n    text-overflow: ellipsis;\r\n    cursor: pointer;\n}\n.p-cascadeselect-label-empty {\r\n    overflow: hidden;\r\n    visibility: hidden;\n}\n.p-cascadeselect .p-cascadeselect-panel {\r\n    min-width: 100%;\n}\n.p-cascadeselect-panel {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\n}\n.p-cascadeselect-item {\r\n    cursor: pointer;\r\n    font-weight: normal;\r\n    white-space: nowrap;\n}\n.p-cascadeselect-item-content {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    overflow: hidden;\r\n    position: relative;\n}\n.p-cascadeselect-group-icon {\r\n    margin-left: auto;\n}\n.p-cascadeselect-items {\r\n    margin: 0;\r\n    padding: 0;\r\n    list-style-type: none;\r\n    min-width: 100%;\n}\n.p-fluid .p-cascadeselect {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\n}\n.p-fluid .p-cascadeselect .p-cascadeselect-label {\r\n    width: 1%;\n}\n.p-cascadeselect-sublist {\r\n    position: absolute;\r\n    min-width: 100%;\r\n    z-index: 1;\r\n    display: none;\n}\n.p-cascadeselect-item-active {\r\n    overflow: visible !important;\n}\n.p-cascadeselect-item-active > .p-cascadeselect-sublist {\r\n    display: block;\r\n    left: 100%;\r\n    top: 0;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

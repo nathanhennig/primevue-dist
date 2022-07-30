@@ -11,7 +11,6 @@ var Button__default = /*#__PURE__*/_interopDefaultLegacy(Button);
 
 var script = {
     name: 'InputNumber',
-    inheritAttrs: false,
     emits: ['update:modelValue', 'input', 'focus', 'blur'],
     props: {
         modelValue: {
@@ -106,10 +105,24 @@ var script = {
             type: Boolean,
             default: false
         },
-        style: null,
-        class: null,
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        inputId: null,
+        inputClass: null,
         inputStyle: null,
-        inputClass: null
+        inputProps: null,
+        incrementButtonProps: null,
+        decrementButtonProps: null,
+        'aria-labelledby': {
+            type: String,
+			default: null
+        },
+        'aria-label': {
+            type: String,
+            default: null
+        }
     },
     numberFormat: null,
     _numeral: null,
@@ -321,24 +334,24 @@ var script = {
             }
         },
         onUpButtonMouseDown(event) {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.$refs.input.$el.focus();
                 this.repeat(event, null, 1);
                 event.preventDefault();
             }
         },
         onUpButtonMouseUp() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
         onUpButtonMouseLeave() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
         onUpButtonKeyUp() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
@@ -348,24 +361,24 @@ var script = {
             }
         },
         onDownButtonMouseDown(event) {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.$refs.input.$el.focus();
                 this.repeat(event, null, -1);
                 event.preventDefault();
             }
         },
         onDownButtonMouseUp() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
         onDownButtonMouseLeave() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
         onDownButtonKeyUp() {
-            if (!this.$attrs.disabled) {
+            if (!this.disabled) {
                 this.clearTimer();
             }
         },
@@ -527,6 +540,22 @@ var script = {
                     else {
                         newValueStr = this.deleteRange(inputValue, selectionStart, selectionEnd);
                         this.updateValue(event, newValueStr, null, 'delete-range');
+                    }
+                break;
+
+                //home
+                case 36:
+                    if (this.min) {
+                        this.updateModel(event, this.min);
+                        event.preventDefault();
+                    }
+                break;
+
+                //end
+                case 35:
+                    if (this.max) {
+                        this.updateModel(event, this.max);
+                        event.preventDefault();
                     }
                 break;
             }
@@ -938,7 +967,7 @@ var script = {
     },
     computed: {
         containerClass() {
-            return ['p-inputnumber p-component p-inputwrapper', this.class, {
+            return ['p-inputnumber p-component p-inputwrapper', {
                 'p-inputwrapper-filled': this.filled,
                 'p-inputwrapper-focus': this.focused,
                 'p-inputnumber-buttons-stacked': this.showButtons && this.buttonLayout === 'stacked',
@@ -948,7 +977,7 @@ var script = {
         },
         
         upButtonClass() {
-            return ['p-inputnumber-button p-inputnumber-button-up', this.incrementButtonClass, {
+            return ['p-inputnumber-button p-inputnumber-button-up', {
                 'p-disabled': this.showButtons && this.max !== null && this.maxBoundry()
             }];
         },
@@ -1002,18 +1031,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_INButton = vue.resolveComponent("INButton");
 
   return (vue.openBlock(), vue.createElementBlock("span", {
-    class: vue.normalizeClass($options.containerClass),
-    style: vue.normalizeStyle($props.style)
+    class: vue.normalizeClass($options.containerClass)
   }, [
     vue.createVNode(_component_INInputText, vue.mergeProps({
       ref: "input",
-      class: ['p-inputnumber-input', $props.inputClass],
+      class: ["p-inputnumber-input", $props.inputClass],
+      role: "spinbutton",
+      id: $props.inputId,
       style: $props.inputStyle,
-      value: $options.formattedValue
-    }, _ctx.$attrs, {
-      "aria-valumin": $props.min,
+      value: $options.formattedValue,
+      "aria-valuemin": $props.min,
       "aria-valuemax": $props.max,
+      "aria-valuenow": $props.modelValue,
       readonly: $props.readonly,
+      "aria-labelledby": _ctx.ariaLabelledby,
+      "aria-label": _ctx.ariaLabel,
       onInput: $options.onUserInput,
       onKeydown: $options.onInputKeyDown,
       onKeypress: $options.onInputKeyPress,
@@ -1021,21 +1053,23 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: $options.onInputClick,
       onFocus: $options.onInputFocus,
       onBlur: $options.onInputBlur
-    }), null, 16, ["class", "style", "value", "aria-valumin", "aria-valuemax", "readonly", "onInput", "onKeydown", "onKeypress", "onPaste", "onClick", "onFocus", "onBlur"]),
+    }, $props.inputProps), null, 16, ["id", "class", "style", "value", "aria-valuemin", "aria-valuemax", "aria-valuenow", "readonly", "aria-labelledby", "aria-label", "onInput", "onKeydown", "onKeypress", "onPaste", "onClick", "onFocus", "onBlur"]),
     ($props.showButtons && $props.buttonLayout === 'stacked')
       ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_1, [
           vue.createVNode(_component_INButton, vue.mergeProps({
             class: $options.upButtonClass,
             icon: $props.incrementButtonIcon
           }, vue.toHandlers($options.upButtonListeners), {
-            disabled: _ctx.$attrs.disabled
-          }), null, 16, ["class", "icon", "disabled"]),
+            disabled: $props.disabled,
+            tabindex: -1
+          }, $props.incrementButtonProps), null, 16, ["class", "icon", "disabled"]),
           vue.createVNode(_component_INButton, vue.mergeProps({
             class: $options.downButtonClass,
             icon: $props.decrementButtonIcon
           }, vue.toHandlers($options.downButtonListeners), {
-            disabled: _ctx.$attrs.disabled
-          }), null, 16, ["class", "icon", "disabled"])
+            disabled: $props.disabled,
+            tabindex: -1
+          }, $props.decrementButtonProps), null, 16, ["class", "icon", "disabled"])
         ]))
       : vue.createCommentVNode("", true),
     ($props.showButtons && $props.buttonLayout !== 'stacked')
@@ -1044,8 +1078,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           class: $options.upButtonClass,
           icon: $props.incrementButtonIcon
         }, vue.toHandlers($options.upButtonListeners), {
-          disabled: _ctx.$attrs.disabled
-        }), null, 16, ["class", "icon", "disabled"]))
+          disabled: $props.disabled,
+          tabindex: -1
+        }, $props.incrementButtonProps), null, 16, ["class", "icon", "disabled"]))
       : vue.createCommentVNode("", true),
     ($props.showButtons && $props.buttonLayout !== 'stacked')
       ? (vue.openBlock(), vue.createBlock(_component_INButton, vue.mergeProps({
@@ -1053,10 +1088,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           class: $options.downButtonClass,
           icon: $props.decrementButtonIcon
         }, vue.toHandlers($options.downButtonListeners), {
-          disabled: _ctx.$attrs.disabled
-        }), null, 16, ["class", "icon", "disabled"]))
+          disabled: $props.disabled,
+          tabindex: -1
+        }, $props.decrementButtonProps), null, 16, ["class", "icon", "disabled"]))
       : vue.createCommentVNode("", true)
-  ], 6))
+  ], 2))
 }
 
 function styleInject(css, ref) {
@@ -1086,7 +1122,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-inputnumber {\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n}\n.p-inputnumber-button {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-flex: 0;\n        -ms-flex: 0 0 auto;\n            flex: 0 0 auto;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button .p-button-label,\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button .p-button-label {\n    display: none;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up {\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-input {\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n    border-bottom-left-radius: 0;\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group .p-button.p-inputnumber-button {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {\n    -webkit-box-ordinal-group: 4;\n        -ms-flex-order: 3;\n            order: 3;\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-inputnumber-input {\n    -webkit-box-ordinal-group: 3;\n        -ms-flex-order: 2;\n            order: 2;\n    border-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {\n    -webkit-box-ordinal-group: 2;\n        -ms-flex-order: 1;\n            order: 1;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-vertical {\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-up {\n    -webkit-box-ordinal-group: 2;\n        -ms-flex-order: 1;\n            order: 1;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    width: 100%;\n}\n.p-inputnumber-buttons-vertical .p-inputnumber-input {\n    -webkit-box-ordinal-group: 3;\n        -ms-flex-order: 2;\n            order: 2;\n    border-radius: 0;\n    text-align: center;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-down {\n    -webkit-box-ordinal-group: 4;\n        -ms-flex-order: 3;\n            order: 3;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n    width: 100%;\n}\n.p-inputnumber-input {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto;\n}\n.p-fluid .p-inputnumber {\n    width: 100%;\n}\n.p-fluid .p-inputnumber .p-inputnumber-input {\n    width: 1%;\n}\n.p-fluid .p-inputnumber-buttons-vertical .p-inputnumber-input {\n    width: 100%;\n}\n";
+var css_248z = "\n.p-inputnumber {\r\n    display: -webkit-inline-box;\r\n    display: -ms-inline-flexbox;\r\n    display: inline-flex;\n}\n.p-inputnumber-button {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -webkit-box-flex: 0;\r\n        -ms-flex: 0 0 auto;\r\n            flex: 0 0 auto;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button .p-button-label,\r\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button .p-button-label {\r\n    display: none;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up {\r\n    border-top-left-radius: 0;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-input {\r\n    border-top-right-radius: 0;\r\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n    border-bottom-left-radius: 0;\r\n    padding: 0;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-inputnumber-buttons-stacked .p-inputnumber-button-group .p-button.p-inputnumber-button {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {\r\n    -webkit-box-ordinal-group: 4;\r\n        -ms-flex-order: 3;\r\n            order: 3;\r\n    border-top-left-radius: 0;\r\n    border-bottom-left-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-inputnumber-input {\r\n    -webkit-box-ordinal-group: 3;\r\n        -ms-flex-order: 2;\r\n            order: 2;\r\n    border-radius: 0;\n}\n.p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {\r\n    -webkit-box-ordinal-group: 2;\r\n        -ms-flex-order: 1;\r\n            order: 1;\r\n    border-top-right-radius: 0;\r\n    border-bottom-right-radius: 0;\n}\n.p-inputnumber-buttons-vertical {\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-up {\r\n    -webkit-box-ordinal-group: 2;\r\n        -ms-flex-order: 1;\r\n            order: 1;\r\n    border-bottom-left-radius: 0;\r\n    border-bottom-right-radius: 0;\r\n    width: 100%;\n}\n.p-inputnumber-buttons-vertical .p-inputnumber-input {\r\n    -webkit-box-ordinal-group: 3;\r\n        -ms-flex-order: 2;\r\n            order: 2;\r\n    border-radius: 0;\r\n    text-align: center;\n}\n.p-inputnumber-buttons-vertical .p-button.p-inputnumber-button-down {\r\n    -webkit-box-ordinal-group: 4;\r\n        -ms-flex-order: 3;\r\n            order: 3;\r\n    border-top-left-radius: 0;\r\n    border-top-right-radius: 0;\r\n    width: 100%;\n}\n.p-inputnumber-input {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 auto;\r\n            flex: 1 1 auto;\n}\n.p-fluid .p-inputnumber {\r\n    width: 100%;\n}\n.p-fluid .p-inputnumber .p-inputnumber-input {\r\n    width: 1%;\n}\n.p-fluid .p-inputnumber-buttons-vertical .p-inputnumber-input {\r\n    width: 100%;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

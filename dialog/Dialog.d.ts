@@ -3,7 +3,7 @@ import { ClassComponent, GlobalComponentConstructor } from '../ts-helpers';
 
 type DialogPositionType = 'center' | 'top' | 'bottom' | 'left' | 'right' | 'topleft' | 'topright' | 'bottomleft' | 'bottomright' | undefined;
 
-type DialogAppendToType = 'body' | 'self' | string | undefined;
+type DialogAppendToType = 'body' | 'self' | string | undefined | HTMLElement;
 
 export interface DialogBreakpoints {
     /**
@@ -128,6 +128,10 @@ export interface DialogProps {
      * Default value is 'body'.
      */
     appendTo?: DialogAppendToType;
+    /**
+     * Style of the dynamic dialog.
+     */
+    style?: any;
 }
 
 export interface DialogSlots {

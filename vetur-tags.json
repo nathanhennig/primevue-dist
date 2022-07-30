@@ -126,14 +126,15 @@
       "stepSeconds",
       "showSeconds",
       "hideOnDateTimeSelect",
+      "hideOnRangeSelection",
       "timeSeparator",
       "showWeek",
       "manualInput",
       "appendTo",
-      "inputStyle",
+      "id",
+      "inputId",
       "inputClass",
-      "class",
-      "style"
+      "inputStyle"
     ]
   },
   "Carousel": {
@@ -166,12 +167,12 @@
       "disabled",
       "dataKey",
       "tabindex",
-      "inputId",
-      "ariaLabelledBy",
       "appendTo",
-      "panelClass",
       "loading",
-      "loadingIcon"
+      "loadingIcon",
+      "inputId",
+      "inputClass",
+      "inputStyle"
     ]
   },
   "Chart": {
@@ -191,10 +192,17 @@
       "value",
       "modelValue",
       "binary",
-      "class",
-      "style",
+      "disabled",
+      "readonly",
+      "required",
+      "tabindex",
       "trueValue",
-      "falseValue"
+      "falseValue",
+      "inputId",
+      "inputClass",
+      "inputStyle",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "Chip": {
@@ -215,8 +223,10 @@
       "separator",
       "addOnBlur",
       "allowDuplicate",
-      "class",
-      "style"
+      "disabled",
+      "inputId",
+      "inputClass",
+      "inputStyle"
     ]
   },
   "ColorPicker": {
@@ -230,9 +240,10 @@
       "tabIndex",
       "baseZIndex",
       "autoZIndex",
-      "ariaLabelledBy",
       "panelClass",
-      "appendTo"
+      "appendTo",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "Column": {
@@ -461,15 +472,28 @@
       "disabled",
       "dataKey",
       "showClear",
-      "tabindex",
       "inputId",
-      "ariaLabelledBy",
-      "emptyFilterMessage",
-      "emptyMessage",
+      "inputStyle",
+      "inputClass",
+      "inputProps",
+      "panelStyle",
       "panelClass",
+      "panelProps",
+      "filterInputProps",
+      "clearIconProps",
+      "appendTo",
       "loading",
       "loadingIcon",
-      "virtualScrollerOptions"
+      "virtualScrollerOptions",
+      "autoOptionFocus",
+      "filterMessage",
+      "selectionMessage",
+      "emptySelectionMessage",
+      "emptyFilterMessage",
+      "emptyMessage",
+      "tabindex",
+      "ariaLabel",
+      "ariaLabelledby"
     ]
   },
   "Editor": {
@@ -621,10 +645,11 @@
     "description": "InputSwitch is used to select a boolean value.",
     "attributes": [
       "modelValue",
-      "class",
-      "style",
       "trueValue",
-      "falseValue"
+      "falseValue",
+      "inputId",
+      "inputStyle",
+      "inputClass"
     ]
   },
   "InputText": {
@@ -648,7 +673,10 @@
       "textColor",
       "strokeWidth",
       "showValue",
-      "valueTemplate"
+      "valueTemplate",
+      "tabindex",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "Listbox": {
@@ -722,30 +750,41 @@
       "optionGroupLabel",
       "optionGroupChildren",
       "scrollHeight",
+      "placeholder",
+      "disabled",
+      "inputId",
+      "inputProps",
+      "panelStyle",
+      "panelClass",
+      "panelProps",
+      "filterInputProps",
+      "closeButtonProps",
+      "dataKey",
       "filter",
       "filterPlaceholder",
       "filterLocale",
       "filterMatchMode",
       "filterFields",
-      "placeholder",
-      "disabled",
-      "tabindex",
-      "inputId",
-      "dataKey",
-      "ariaLabelledBy",
-      "emptyFilterMessage",
-      "emptyMessage",
+      "appendTo",
       "display",
-      "panelClass",
+      "selectedItemsLabel",
+      "maxSelectedLabels",
       "selectionLimit",
       "showToggleAll",
       "loading",
       "loadingIcon",
-      "maxSelectedLabels",
-      "selectedItemsLabel",
       "selectAll",
       "resetFilterOnHide",
-      "virtualScrollerOptions"
+      "virtualScrollerOptions",
+      "autoOptionFocus",
+      "filterMessage",
+      "selectionMessage",
+      "emptySelectionMessage",
+      "emptyFilterMessage",
+      "emptyMessage",
+      "tabindex",
+      "ariaLabel",
+      "ariaLabelledby"
     ]
   },
   "OrderList": {
@@ -816,6 +855,7 @@
     "description": "Password displays strength indicator for password fields.",
     "attributes": [
       "modelValue",
+      "inputId",
       "promptLabel",
       "mediumRegex",
       "strongRegex",
@@ -827,11 +867,12 @@
       "appendTo",
       "hideIcon",
       "showIcon",
+      "inputId",
       "inputStyle",
       "inputClass",
-      "class",
-      "style",
-      "panelClass"
+      "panelId",
+      "panelClass",
+      "panelStyle"
     ]
   },
   "PickList": {
@@ -844,7 +885,9 @@
       "listStyle",
       "responsive",
       "breakpoint",
-      "stripedRows"
+      "stripedRows",
+      "showSourceControls",
+      "showTargetControls"
     ]
   },
   "Portal": {
@@ -908,8 +951,7 @@
       "optionDisabled",
       "multiple",
       "disabled",
-      "dataKey",
-      "ariaLabelledBy"
+      "dataKey"
     ]
   },
   "Sidebar": {
@@ -946,7 +988,9 @@
       "step",
       "range",
       "disabled",
-      "ariaLabelledBy"
+      "tabindex",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "SpeedDial": {
@@ -1094,7 +1138,12 @@
       "offIcon",
       "onLabel",
       "offLabel",
-      "iconPos"
+      "iconPos",
+      "tabindex",
+      "disabled",
+      "inputId",
+      "inputClass",
+      "inputStyle"
     ]
   },
   "Tree": {
@@ -1125,13 +1174,16 @@
       "disabled",
       "tabindex",
       "inputId",
-      "ariaLabelledBy",
+      "inputStyle",
+      "inputClass",
       "selectionMode",
       "panelClass",
       "appendTo",
       "emptyMessage",
       "display",
-      "metaKeySelection"
+      "metaKeySelection",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "TreeTable": {
@@ -1181,7 +1233,9 @@
     "attributes": [
       "modelValue",
       "class",
-      "style"
+      "style",
+      "aria-labelledby",
+      "aria-label"
     ]
   },
   "VirtualScroller": {
@@ -1202,7 +1256,8 @@
       "loaderDisabled",
       "loading",
       "showSpacer",
-      "showLoader"
+      "showLoader",
+      "tabindex"
     ]
   }
 }

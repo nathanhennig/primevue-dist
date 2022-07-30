@@ -45,6 +45,14 @@ var script = {
         stripedRows: {
             type: Boolean,
             default: false
+        },
+        showSourceControls: {
+            type: Boolean,
+            default: true
+        },
+        showTargetControls: {
+            type: Boolean,
+            default: true
         }
     },
     itemTouched: false,
@@ -523,7 +531,10 @@ var script = {
     }
 };
 
-const _hoisted_1 = { class: "p-picklist-buttons p-picklist-source-controls" };
+const _hoisted_1 = {
+  key: 0,
+  class: "p-picklist-buttons p-picklist-source-controls"
+};
 const _hoisted_2 = { class: "p-picklist-list-wrapper p-picklist-source-wrapper" };
 const _hoisted_3 = {
   key: 0,
@@ -537,7 +548,10 @@ const _hoisted_7 = {
   class: "p-picklist-header"
 };
 const _hoisted_8 = ["onClick", "onDblclick", "onKeydown", "aria-selected"];
-const _hoisted_9 = { class: "p-picklist-buttons p-picklist-target-controls" };
+const _hoisted_9 = {
+  key: 1,
+  class: "p-picklist-buttons p-picklist-target-controls"
+};
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_PLButton = vue.resolveComponent("PLButton");
@@ -546,30 +560,32 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (vue.openBlock(), vue.createElementBlock("div", {
     class: vue.normalizeClass($options.containerClass)
   }, [
-    vue.createElementVNode("div", _hoisted_1, [
-      vue.renderSlot(_ctx.$slots, "sourcecontrolsstart"),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-up",
-        onClick: _cache[0] || (_cache[0] = $event => ($options.moveUp($event, 0)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-double-up",
-        onClick: _cache[1] || (_cache[1] = $event => ($options.moveTop($event, 0)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-down",
-        onClick: _cache[2] || (_cache[2] = $event => ($options.moveDown($event, 0)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-double-down",
-        onClick: _cache[3] || (_cache[3] = $event => ($options.moveBottom($event, 0)))
-      }),
-      vue.renderSlot(_ctx.$slots, "sourcecontrolsend")
-    ]),
+    ($props.showSourceControls)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1, [
+          vue.renderSlot(_ctx.$slots, "sourcecontrolsstart"),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-up",
+            onClick: _cache[0] || (_cache[0] = $event => ($options.moveUp($event, 0)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-double-up",
+            onClick: _cache[1] || (_cache[1] = $event => ($options.moveTop($event, 0)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-down",
+            onClick: _cache[2] || (_cache[2] = $event => ($options.moveDown($event, 0)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-double-down",
+            onClick: _cache[3] || (_cache[3] = $event => ($options.moveBottom($event, 0)))
+          }),
+          vue.renderSlot(_ctx.$slots, "sourcecontrolsend")
+        ]))
+      : vue.createCommentVNode("", true),
     vue.createElementVNode("div", _hoisted_2, [
       (_ctx.$slots.sourceheader)
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3, [
@@ -674,30 +690,32 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         _: 3
       }, 8, ["style"])
     ]),
-    vue.createElementVNode("div", _hoisted_9, [
-      vue.renderSlot(_ctx.$slots, "targetcontrolsstart"),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-up",
-        onClick: _cache[6] || (_cache[6] = $event => ($options.moveUp($event, 1)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-double-up",
-        onClick: _cache[7] || (_cache[7] = $event => ($options.moveTop($event, 1)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-down",
-        onClick: _cache[8] || (_cache[8] = $event => ($options.moveDown($event, 1)))
-      }),
-      vue.createVNode(_component_PLButton, {
-        type: "button",
-        icon: "pi pi-angle-double-down",
-        onClick: _cache[9] || (_cache[9] = $event => ($options.moveBottom($event, 1)))
-      }),
-      vue.renderSlot(_ctx.$slots, "targetcontrolsend")
-    ])
+    ($props.showTargetControls)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9, [
+          vue.renderSlot(_ctx.$slots, "targetcontrolsstart"),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-up",
+            onClick: _cache[6] || (_cache[6] = $event => ($options.moveUp($event, 1)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-double-up",
+            onClick: _cache[7] || (_cache[7] = $event => ($options.moveTop($event, 1)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-down",
+            onClick: _cache[8] || (_cache[8] = $event => ($options.moveDown($event, 1)))
+          }),
+          vue.createVNode(_component_PLButton, {
+            type: "button",
+            icon: "pi pi-angle-double-down",
+            onClick: _cache[9] || (_cache[9] = $event => ($options.moveBottom($event, 1)))
+          }),
+          vue.renderSlot(_ctx.$slots, "targetcontrolsend")
+        ]))
+      : vue.createCommentVNode("", true)
   ], 2))
 }
 
@@ -728,7 +746,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-picklist {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n.p-picklist-buttons {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.p-picklist-list-wrapper {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 50%;\n            flex: 1 1 50%;\n}\n.p-picklist-list {\n    list-style-type: none;\n    margin: 0;\n    padding: 0;\n    overflow: auto;\n    min-height: 12rem;\n    max-height: 24rem;\n}\n.p-picklist-item {\n    cursor: pointer;\n    overflow: hidden;\n    position: relative;\n}\n.p-picklist-item.p-picklist-flip-enter-active.p-picklist-flip-enter-to,\n.p-picklist-item.p-picklist-flip-leave-active.p-picklist-flip-leave-to {\n    -webkit-transition: none !important;\n    transition: none !important;\n}\n";
+var css_248z = "\n.p-picklist {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\n}\n.p-picklist-buttons {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-orient: vertical;\r\n    -webkit-box-direction: normal;\r\n        -ms-flex-direction: column;\r\n            flex-direction: column;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\n}\n.p-picklist-list-wrapper {\r\n    -webkit-box-flex: 1;\r\n        -ms-flex: 1 1 50%;\r\n            flex: 1 1 50%;\n}\n.p-picklist-list {\r\n    list-style-type: none;\r\n    margin: 0;\r\n    padding: 0;\r\n    overflow: auto;\r\n    min-height: 12rem;\r\n    max-height: 24rem;\n}\n.p-picklist-item {\r\n    cursor: pointer;\r\n    overflow: hidden;\r\n    position: relative;\n}\n.p-picklist-item.p-picklist-flip-enter-active.p-picklist-flip-enter-to,\r\n.p-picklist-item.p-picklist-flip-leave-active.p-picklist-flip-leave-to {\r\n    -webkit-transition: none !important;\r\n    transition: none !important;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

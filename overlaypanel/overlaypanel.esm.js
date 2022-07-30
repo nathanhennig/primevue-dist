@@ -7,6 +7,7 @@ import { resolveComponent, resolveDirective, openBlock, createBlock, withCtx, cr
 var script = {
     name: 'OverlayPanel',
     inheritAttrs: false,
+    emits: ['show', 'hide'],
     props: {
 		dismissable: {
 			type: Boolean,
@@ -37,10 +38,21 @@ var script = {
             default: null
         }
     },
-    emits: ['show', 'hide'],
     data() {
         return {
             visible: false
+        }
+    },
+    watch: {
+        dismissable: {
+            immediate: true,
+            handler(newValue) {
+                if (newValue) {
+                    this.bindOutsideClickListener();
+                } else {
+                    this.unbindOutsideClickListener();
+                }
+            }
         }
     },
     selfClick: false,
@@ -341,7 +353,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-overlaypanel {\n    position: absolute;\n    margin-top: 10px;\n    top: 0;\n    left: 0;\n}\n.p-overlaypanel-flipped {\n    margin-top: 0;\n    margin-bottom: 10px;\n}\n.p-overlaypanel-close {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    overflow: hidden;\n    position: relative;\n}\n\n/* Animation */\n.p-overlaypanel-enter-from {\n    opacity: 0;\n    -webkit-transform: scaleY(0.8);\n            transform: scaleY(0.8);\n}\n.p-overlaypanel-leave-to {\n    opacity: 0;\n}\n.p-overlaypanel-enter-active {\n    -webkit-transition: opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\n    transition: opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\n    transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1);\n    transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\n}\n.p-overlaypanel-leave-active {\n    -webkit-transition: opacity .1s linear;\n    transition: opacity .1s linear;\n}\n.p-overlaypanel:after, .p-overlaypanel:before {\n\tbottom: 100%;\n\tleft: calc(var(--overlayArrowLeft, 0) + 1.25rem);\n\tcontent: \" \";\n\theight: 0;\n\twidth: 0;\n\tposition: absolute;\n\tpointer-events: none;\n}\n.p-overlaypanel:after {\n\tborder-width: 8px;\n\tmargin-left: -8px;\n}\n.p-overlaypanel:before {\n\tborder-width: 10px;\n\tmargin-left: -10px;\n}\n.p-overlaypanel-flipped:after, .p-overlaypanel-flipped:before {\n    bottom: auto;\n    top: 100%;\n}\n.p-overlaypanel.p-overlaypanel-flipped:after {\n    border-bottom-color: transparent;\n}\n.p-overlaypanel.p-overlaypanel-flipped:before {\n    border-bottom-color: transparent\n}\n";
+var css_248z = "\n.p-overlaypanel {\r\n    position: absolute;\r\n    margin-top: 10px;\r\n    top: 0;\r\n    left: 0;\n}\n.p-overlaypanel-flipped {\r\n    margin-top: 0;\r\n    margin-bottom: 10px;\n}\n.p-overlaypanel-close {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    overflow: hidden;\r\n    position: relative;\n}\r\n\r\n/* Animation */\n.p-overlaypanel-enter-from {\r\n    opacity: 0;\r\n    -webkit-transform: scaleY(0.8);\r\n            transform: scaleY(0.8);\n}\n.p-overlaypanel-leave-to {\r\n    opacity: 0;\n}\n.p-overlaypanel-enter-active {\r\n    -webkit-transition: opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\r\n    transition: opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\r\n    transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1);\r\n    transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1), -webkit-transform .12s cubic-bezier(0, 0, 0.2, 1);\n}\n.p-overlaypanel-leave-active {\r\n    -webkit-transition: opacity .1s linear;\r\n    transition: opacity .1s linear;\n}\n.p-overlaypanel:after, .p-overlaypanel:before {\r\n\tbottom: 100%;\r\n\tleft: calc(var(--overlayArrowLeft, 0) + 1.25rem);\r\n\tcontent: \" \";\r\n\theight: 0;\r\n\twidth: 0;\r\n\tposition: absolute;\r\n\tpointer-events: none;\n}\n.p-overlaypanel:after {\r\n\tborder-width: 8px;\r\n\tmargin-left: -8px;\n}\n.p-overlaypanel:before {\r\n\tborder-width: 10px;\r\n\tmargin-left: -10px;\n}\n.p-overlaypanel-flipped:after, .p-overlaypanel-flipped:before {\r\n    bottom: auto;\r\n    top: 100%;\n}\n.p-overlaypanel.p-overlaypanel-flipped:after {\r\n    border-bottom-color: transparent;\n}\n.p-overlaypanel.p-overlaypanel-flipped:before {\r\n    border-bottom-color: transparent\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

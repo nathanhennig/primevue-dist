@@ -1,7 +1,7 @@
 import { ZIndexUtils, DomHandler, ConnectedOverlayScrollHandler } from 'primevue/utils';
 import OverlayEventBus from 'primevue/overlayeventbus';
 import Ripple from 'primevue/ripple';
-import { resolveComponent, resolveDirective, openBlock, createElementBlock, normalizeClass, normalizeStyle, Fragment, createBlock, withCtx, withDirectives, createElementVNode, toDisplayString, resolveDynamicComponent, createCommentVNode, createVNode, Transition, mergeProps, renderList, renderSlot, createTextVNode } from 'vue';
+import { resolveComponent, resolveDirective, openBlock, createElementBlock, normalizeClass, normalizeStyle, Fragment, createBlock, withCtx, withDirectives, createCommentVNode, createElementVNode, toDisplayString, resolveDynamicComponent, createVNode, Transition, mergeProps, renderList, renderSlot, createTextVNode } from 'vue';
 import Portal from 'primevue/portal';
 
 var script$1 = {
@@ -79,9 +79,12 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
                         class: normalizeClass($options.linkClass($props.item, {isActive, isExactActive})),
                         role: "menuitem"
                       }, [
-                        createElementVNode("span", {
-                          class: normalizeClass(['p-menuitem-icon', $props.item.icon])
-                        }, null, 2),
+                        ($props.item.icon)
+                          ? (openBlock(), createElementBlock("span", {
+                              key: 0,
+                              class: normalizeClass(['p-menuitem-icon', $props.item.icon])
+                            }, null, 2))
+                          : createCommentVNode("", true),
                         createElementVNode("span", _hoisted_2$1, toDisplayString($options.label()), 1)
                       ], 10, _hoisted_1$1)), [
                         [_directive_ripple]
@@ -98,9 +101,12 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
                     role: "menuitem",
                     tabindex: $options.disabled($props.item) ? null : '0'
                   }, [
-                    createElementVNode("span", {
-                      class: normalizeClass(['p-menuitem-icon', $props.item.icon])
-                    }, null, 2),
+                    ($props.item.icon)
+                      ? (openBlock(), createElementBlock("span", {
+                          key: 0,
+                          class: normalizeClass(['p-menuitem-icon', $props.item.icon])
+                        }, null, 2))
+                      : createCommentVNode("", true),
                     createElementVNode("span", _hoisted_4, toDisplayString($options.label()), 1)
                   ], 10, _hoisted_3)), [
                     [_directive_ripple]

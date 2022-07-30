@@ -4,15 +4,12 @@ this.primevue.inputswitch = (function (vue) {
 
     var script = {
         name: 'InputSwitch',
-        inheritAttrs: false,
-        emits: ['click', 'update:modelValue', 'change', 'input'],
+        emits: ['click', 'update:modelValue', 'change', 'input', 'focus', 'blur'],
         props: {
             modelValue: {
                 type: null,
                 default: false
             },
-            class: null,
-            style: null,
             trueValue: {
                 type: null,
                 default: true
@@ -20,6 +17,22 @@ this.primevue.inputswitch = (function (vue) {
             falseValue: {
                 type: null,
                 default: false
+            },
+            disabled: {
+                type: Boolean,
+                default: false
+            },
+            inputId: null,
+            inputClass: null,
+            inputStyle: null,
+            inputProps: null,
+            'aria-labelledby': {
+                type: String,
+    			default: null
+            },
+            'aria-label': {
+                type: String,
+                default: null
             }
         },
         data() {
@@ -29,7 +42,7 @@ this.primevue.inputswitch = (function (vue) {
         },
         methods: {
             onClick(event) {
-                if (!this.$attrs.disabled) {
+                if (!this.disabled) {
                     const newValue = this.checked ? this.falseValue : this.trueValue;
                     this.$emit('click', event);
                     this.$emit('update:modelValue', newValue);
@@ -39,20 +52,22 @@ this.primevue.inputswitch = (function (vue) {
                 }
                 event.preventDefault();
             },
-            onFocus() {
+            onFocus(event) {
                 this.focused = true;
+                this.$emit('focus', event);
             },
-            onBlur() {
+            onBlur(event) {
                 this.focused = false;
+                this.$emit('blur', event);
             }
         },
         computed: {
             containerClass() {
                 return [
-                    'p-inputswitch p-component', this.class,
+                    'p-inputswitch p-component',
                     {
                         'p-inputswitch-checked': this.checked,
-    					'p-disabled': this.$attrs.disabled,
+    					'p-disabled': this.disabled,
                         'p-focus': this.focused
                     }
                 ];
@@ -64,30 +79,33 @@ this.primevue.inputswitch = (function (vue) {
     };
 
     const _hoisted_1 = { class: "p-hidden-accessible" };
-    const _hoisted_2 = ["checked", "aria-checked"];
+    const _hoisted_2 = ["id", "checked", "disabled", "aria-checked", "aria-labelledby", "aria-label"];
     const _hoisted_3 = /*#__PURE__*/vue.createElementVNode("span", { class: "p-inputswitch-slider" }, null, -1);
 
     function render(_ctx, _cache, $props, $setup, $data, $options) {
       return (vue.openBlock(), vue.createElementBlock("div", {
         class: vue.normalizeClass($options.containerClass),
-        onClick: _cache[3] || (_cache[3] = $event => ($options.onClick($event))),
-        style: vue.normalizeStyle($props.style)
+        onClick: _cache[2] || (_cache[2] = $event => ($options.onClick($event)))
       }, [
         vue.createElementVNode("div", _hoisted_1, [
           vue.createElementVNode("input", vue.mergeProps({
+            id: $props.inputId,
             ref: "input",
             type: "checkbox",
-            checked: $options.checked
-          }, _ctx.$attrs, {
-            onFocus: _cache[0] || (_cache[0] = $event => ($options.onFocus($event))),
-            onBlur: _cache[1] || (_cache[1] = $event => ($options.onBlur($event))),
-            onKeydown: _cache[2] || (_cache[2] = vue.withKeys(vue.withModifiers($event => ($options.onClick($event)), ["prevent"]), ["enter"])),
             role: "switch",
-            "aria-checked": $options.checked
-          }), null, 16, _hoisted_2)
+            class: $props.inputClass,
+            style: $props.inputStyle,
+            checked: $options.checked,
+            disabled: $props.disabled,
+            "aria-checked": $options.checked,
+            "aria-labelledby": _ctx.ariaLabelledby,
+            "aria-label": _ctx.ariaLabel,
+            onFocus: _cache[0] || (_cache[0] = $event => ($options.onFocus($event))),
+            onBlur: _cache[1] || (_cache[1] = $event => ($options.onBlur($event)))
+          }, $props.inputProps), null, 16, _hoisted_2)
         ]),
         _hoisted_3
-      ], 6))
+      ], 2))
     }
 
     function styleInject(css, ref) {
@@ -117,7 +135,7 @@ this.primevue.inputswitch = (function (vue) {
       }
     }
 
-    var css_248z = "\n.p-inputswitch {\n    position: relative;\n    display: inline-block;\n}\n.p-inputswitch-slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n}\n.p-inputswitch-slider:before {\n    position: absolute;\n    content: \"\";\n    top: 50%;\n}\n";
+    var css_248z = "\n.p-inputswitch {\r\n    position: relative;\r\n    display: inline-block;\n}\n.p-inputswitch-slider {\r\n    position: absolute;\r\n    cursor: pointer;\r\n    top: 0;\r\n    left: 0;\r\n    right: 0;\r\n    bottom: 0;\n}\n.p-inputswitch-slider:before {\r\n    position: absolute;\r\n    content: \"\";\r\n    top: 50%;\n}\r\n";
     styleInject(css_248z);
 
     script.render = render;

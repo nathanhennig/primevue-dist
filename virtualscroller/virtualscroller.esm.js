@@ -59,6 +59,10 @@ var script = {
         showLoader: {
             type: Boolean,
             default: false
+        },
+        tabindex: {
+            type: Number,
+            default: 0
         }
     },
     data() {
@@ -123,24 +127,20 @@ var script = {
             const first = this.first;
             const { numToleratedItems } = this.calculateNumItems();
             const itemSize = this.itemSize;
-            const contentPos = this.getContentPosition();
             const calculateFirst = (_index = 0, _numT) => (_index <= _numT ? 0 : _index);
-            const calculateCoord = (_first, _size, _cpos) => (_first * _size) + _cpos;
+            const calculateCoord = (_first, _size) => (_first * _size);
             const scrollTo = (left = 0, top = 0) => this.scrollTo({ left, top, behavior });
 
             if (both) {
                 const newFirst = { rows: calculateFirst(index[0], numToleratedItems[0]), cols: calculateFirst(index[1], numToleratedItems[1]) };
                 if (newFirst.rows !== first.rows || newFirst.cols !== first.cols) {
-                    scrollTo(calculateCoord(newFirst.cols, itemSize[1], contentPos.left), calculateCoord(newFirst.rows, itemSize[0], contentPos.top));
-                    this.first = newFirst;
+                    scrollTo(calculateCoord(newFirst.cols, itemSize[1]), calculateCoord(newFirst.rows, itemSize[0]));
                 }
             }
             else {
                 const newFirst = calculateFirst(index, numToleratedItems);
-
                 if (newFirst !== first) {
-                    horizontal ? scrollTo(calculateCoord(newFirst, itemSize, contentPos.left), 0) : scrollTo(0, calculateCoord(newFirst, itemSize, contentPos.top));
-                    this.first = newFirst;
+                    horizontal ? scrollTo(calculateCoord(newFirst, itemSize), 0) : scrollTo(0, calculateCoord(newFirst, itemSize));
                 }
             }
         },
@@ -371,9 +371,10 @@ var script = {
             const scrollTop = calculateScrollPos(target.scrollTop, contentPos.top);
             const scrollLeft = calculateScrollPos(target.scrollLeft, contentPos.left);
 
-            let newFirst = 0;
+            let newFirst = both ? { rows: 0, cols: 0 } : 0;
             let newLast = this.last;
             let isRangeChanged = false;
+            let newScrollPos = this.lastScrollPos;
 
             if (both) {
                 const isScrollDown = this.lastScrollPos.top <= scrollTop;
@@ -393,9 +394,8 @@ var script = {
                     cols: calculateLast(currentIndex.cols, newFirst.cols, this.last.cols, this.numItemsInViewport.cols, this.d_numToleratedItems[1], true)
                 };
 
-                isRangeChanged = (newFirst.rows !== this.first.rows && newLast.rows !== this.last.rows) || (newFirst.cols !== this.first.cols && newLast.cols !== this.last.cols);
-
-                this.lastScrollPos = { top: scrollTop, left: scrollLeft };
+                isRangeChanged = (newFirst.rows !== this.first.rows || newLast.rows !== this.last.rows) || (newFirst.cols !== this.first.cols || newLast.cols !== this.last.cols);
+                newScrollPos = { top: scrollTop, left: scrollLeft };
             }
             else {
                 const scrollPos = horizontal ? scrollLeft : scrollTop;
@@ -405,19 +405,19 @@ var script = {
 
                 newFirst = calculateFirst(currentIndex, triggerIndex, this.first, this.last, this.numItemsInViewport, this.d_numToleratedItems, isScrollDownOrRight);
                 newLast = calculateLast(currentIndex, newFirst, this.last, this.numItemsInViewport, this.d_numToleratedItems);
-                isRangeChanged = newFirst !== this.first && newLast !== this.last;
-
-                this.lastScrollPos = scrollPos;
+                isRangeChanged = newFirst !== this.first || newLast !== this.last;
+                newScrollPos = scrollPos;
             }
 
             return {
                 first: newFirst,
                 last: newLast,
-                isRangeChanged
+                isRangeChanged,
+                scrollPos: newScrollPos
             }
         },
         onScrollChange(event) {
-            const { first, last, isRangeChanged } = this.onScrollPositionChange(event);
+            const { first, last, isRangeChanged, scrollPos } = this.onScrollPositionChange(event);
 
             if (isRangeChanged) {
                 const newState = { first, last };
@@ -426,6 +426,7 @@ var script = {
 
                 this.first = first;
                 this.last = last;
+                this.lastScrollPos = scrollPos;
 
                 this.$emit('scroll-index-change', newState);
 
@@ -541,7 +542,8 @@ var script = {
     }
 };
 
-const _hoisted_1 = {
+const _hoisted_1 = ["tabindex"];
+const _hoisted_2 = {
   key: 1,
   class: "p-virtualscroller-loading-icon pi pi-spinner pi-spin"
 };
@@ -552,7 +554,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         key: 0,
         ref: $options.elementRef,
         class: normalizeClass($options.containerClass),
-        tabindex: 0,
+        tabindex: $props.tabindex,
         style: normalizeStyle($props.style),
         onScroll: _cache[0] || (_cache[0] = (...args) => ($options.onScroll && $options.onScroll(...args)))
       }, [
@@ -605,10 +607,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                       options: $options.getLoaderOptions(index, $options.isBoth() && { numCols: _ctx.d_numItemsInViewport.cols })
                     })
                   }), 128))
-                : (openBlock(), createElementBlock("i", _hoisted_1))
+                : (openBlock(), createElementBlock("i", _hoisted_2))
             ], 2))
           : createCommentVNode("", true)
-      ], 38))
+      ], 46, _hoisted_1))
     : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
         renderSlot(_ctx.$slots, "default"),
         renderSlot(_ctx.$slots, "content", {
@@ -646,7 +648,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "\n.p-virtualscroller {\n    position: relative;\n    overflow: auto;\n    contain: strict;\n    -webkit-transform: translateZ(0);\n            transform: translateZ(0);\n    will-change: scroll-position;\n    outline: 0 none;\n}\n.p-virtualscroller-content {\n    position: absolute;\n    top: 0;\n    left: 0;\n    contain: content;\n    min-height: 100%;\n    min-width: 100%;\n    will-change: transform;\n}\n.p-virtualscroller-spacer {\n    position: absolute;\n    top: 0;\n    left: 0;\n    height: 1px;\n    width: 1px;\n    -webkit-transform-origin: 0 0;\n            transform-origin: 0 0;\n    pointer-events: none;\n}\n.p-virtualscroller .p-virtualscroller-loader {\n    position: sticky;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n.p-virtualscroller-loader.p-component-overlay {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n";
+var css_248z = "\n.p-virtualscroller {\r\n    position: relative;\r\n    overflow: auto;\r\n    contain: strict;\r\n    -webkit-transform: translateZ(0);\r\n            transform: translateZ(0);\r\n    will-change: scroll-position;\r\n    outline: 0 none;\n}\n.p-virtualscroller-content {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    contain: content;\r\n    min-height: 100%;\r\n    min-width: 100%;\r\n    will-change: transform;\n}\n.p-virtualscroller-spacer {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    height: 1px;\r\n    width: 1px;\r\n    -webkit-transform-origin: 0 0;\r\n            transform-origin: 0 0;\r\n    pointer-events: none;\n}\n.p-virtualscroller .p-virtualscroller-loader {\r\n    position: sticky;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\n}\n.p-virtualscroller-loader.p-component-overlay {\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -webkit-box-align: center;\r\n        -ms-flex-align: center;\r\n            align-items: center;\r\n    -webkit-box-pack: center;\r\n        -ms-flex-pack: center;\r\n            justify-content: center;\n}\r\n";
 styleInject(css_248z);
 
 script.render = render;

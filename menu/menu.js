@@ -83,9 +83,12 @@ this.primevue.menu = (function (utils, OverlayEventBus, Ripple, vue, Portal) {
                             class: vue.normalizeClass($options.linkClass($props.item, {isActive, isExactActive})),
                             role: "menuitem"
                           }, [
-                            vue.createElementVNode("span", {
-                              class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
-                            }, null, 2),
+                            ($props.item.icon)
+                              ? (vue.openBlock(), vue.createElementBlock("span", {
+                                  key: 0,
+                                  class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
+                                }, null, 2))
+                              : vue.createCommentVNode("", true),
                             vue.createElementVNode("span", _hoisted_2$1, vue.toDisplayString($options.label()), 1)
                           ], 10, _hoisted_1$1)), [
                             [_directive_ripple]
@@ -102,9 +105,12 @@ this.primevue.menu = (function (utils, OverlayEventBus, Ripple, vue, Portal) {
                         role: "menuitem",
                         tabindex: $options.disabled($props.item) ? null : '0'
                       }, [
-                        vue.createElementVNode("span", {
-                          class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
-                        }, null, 2),
+                        ($props.item.icon)
+                          ? (vue.openBlock(), vue.createElementBlock("span", {
+                              key: 0,
+                              class: vue.normalizeClass(['p-menuitem-icon', $props.item.icon])
+                            }, null, 2))
+                          : vue.createCommentVNode("", true),
                         vue.createElementVNode("span", _hoisted_4, vue.toDisplayString($options.label()), 1)
                       ], 10, _hoisted_3)), [
                         [_directive_ripple]

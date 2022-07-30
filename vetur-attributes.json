@@ -335,6 +335,10 @@
     "description": "Whether to hide the overlay on date selection when showTime is enabled.",
     "type": "boolean"
   },
+  "calendar/hideOnRangeSelection": {
+    "description": "Whether to hide the overlay on date selection is completed when selectionMode is range.",
+    "type": "boolean"
+  },
   "calendar/timeSeparator": {
     "description": "Separator of time selector.",
     "type": "string"
@@ -351,20 +355,20 @@
     "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are \"body\" for document body and \"self\" for the element itself.",
     "type": "string"
   },
-  "calendar/inputStyle": {
-    "description": "Inline style of the input field.",
-    "type": "any"
+  "calendar/id": {
+    "description": "Identifier of the element.",
+    "type": "string"
+  },
+  "calendar/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
   },
   "calendar/inputClass": {
     "description": "Style class of the input field.",
     "type": "string"
   },
-  "calendar/class": {
-    "description": "Style class of the component.",
-    "type": "string"
-  },
-  "calendar/style": {
-    "description": "Inline style of the component.",
+  "calendar/inputStyle": {
+    "description": "Inline style of the input field.",
     "type": "any"
   },
   "carousel/value": {
@@ -455,20 +459,8 @@
     "description": "Index of the element in tabbing order.",
     "type": "number"
   },
-  "cascadeselect/inputId": {
-    "description": "Identifier of the underlying input element.",
-    "type": "string"
-  },
-  "cascadeselect/ariaLabelledBy": {
-    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
-    "type": "string"
-  },
   "cascadeselect/appendTo": {
     "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are \"body\" for document body and \"self\" for the element itself.",
-    "type": "string"
-  },
-  "cascadeselect/panelClass": {
-    "description": "Style class of the overlay panel.",
     "type": "string"
   },
   "cascadeselect/loading": {
@@ -478,6 +470,18 @@
   "cascadeselect/loadingIcon": {
     "description": "Icon to display in loading state.",
     "type": "string"
+  },
+  "cascadeselect/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
+  },
+  "cascadeselect/inputClass": {
+    "description": "Style class of the input field.",
+    "type": "any"
+  },
+  "cascadeselect/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "any"
   },
   "chart/type": {
     "description": "Type of the chart.",
@@ -515,13 +519,21 @@
     "description": "Allows to select a boolean value instead of multiple values.",
     "type": "boolean"
   },
-  "checkbox/class": {
-    "description": "Style class of the component.",
-    "type": "string"
+  "checkbox/disabled": {
+    "description": "When present, it specifies that the element should be disabled.",
+    "type": "boolean"
   },
-  "checkbox/style": {
-    "description": "Inline of the component.",
-    "type": "any"
+  "checkbox/readonly": {
+    "description": "When present, it specifies that an input field is read-only.",
+    "type": "boolean"
+  },
+  "checkbox/required": {
+    "description": "When present, it specifies that the element is required.",
+    "type": "boolean"
+  },
+  "checkbox/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
   },
   "checkbox/trueValue": {
     "description": "Value in checked state.",
@@ -530,6 +542,26 @@
   "checkbox/falseValue": {
     "description": "Value in unchecked state.",
     "type": "any"
+  },
+  "checkbox/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
+  },
+  "checkbox/inputClass": {
+    "description": "Style class of the input field.",
+    "type": "any"
+  },
+  "checkbox/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "any"
+  },
+  "checkbox/aria-labelledby": {
+    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "checkbox/aria-label": {
+    "description": "Used to define a string that labels the element.",
+    "type": "string"
   },
   "chip/label": {
     "description": "Defines the text to display.",
@@ -571,12 +603,20 @@
     "description": "Whether to allow duplicate values or not.",
     "type": "boolean"
   },
-  "chips/class": {
-    "description": "Style class of the component.",
+  "chips/disabled": {
+    "description": "When present, it specifies that the element should be disabled.",
+    "type": "boolean"
+  },
+  "chips/inputId": {
+    "description": "Identifier of the focus input to match a label defined for the chips.",
     "type": "string"
   },
-  "chips/style": {
-    "description": "Inline of the component.",
+  "chips/inputClass": {
+    "description": "Style class of the input field.",
+    "type": "string"
+  },
+  "chips/inputStyle": {
+    "description": "Inline style of the input field.",
     "type": "any"
   },
   "colorpicker/modelValue": {
@@ -611,16 +651,20 @@
     "description": "Whether to automatically manage layering.",
     "type": "boolean"
   },
-  "colorpicker/ariaLabelledBy": {
-    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
-    "type": "string"
-  },
   "colorpicker/panelClass": {
     "description": "Style class of the overlay panel.",
     "type": "string"
   },
   "colorpicker/appendTo": {
     "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are \"body\" for document body and \"self\" for the element itself.",
+    "type": "string"
+  },
+  "colorpicker/aria-labelledby": {
+    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "colorpicker/aria-label": {
+    "description": "Used to define a string that labels the element.",
     "type": "string"
   },
   "column/columnKey": {
@@ -1335,28 +1379,44 @@
     "description": "When enabled, a clear icon is displayed to clear the value.",
     "type": "boolean"
   },
-  "dropdown/tabindex": {
-    "description": "Index of the element in tabbing order.",
-    "type": "number"
-  },
   "dropdown/inputId": {
     "description": "Identifier of the underlying input element.",
     "type": "string"
   },
-  "dropdown/ariaLabelledBy": {
-    "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are \"body\" for document body and \"self\" for the element itself.",
+  "dropdown/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "object"
+  },
+  "dropdown/inputClass": {
+    "description": "Style class of the input field.",
     "type": "string"
   },
-  "dropdown/emptyFilterMessage": {
-    "description": "Text to display when filtering does not return any results. Defaults to value from PrimeVue locale configuration.",
-    "type": "string"
+  "dropdown/inputProps": {
+    "description": "Uses to pass all properties of the HTMLInputElement/HTMLSpanElement to the focusable input element inside the component.",
+    "type": "object"
   },
-  "dropdown/emptyMessage": {
-    "description": "Text to display when there are no options available. Defaults to value from PrimeVue locale configuration.",
-    "type": "string"
+  "dropdown/panelStyle": {
+    "description": "Inline style of the overlay panel.",
+    "type": "object"
   },
   "dropdown/panelClass": {
     "description": "Style class of the overlay panel.",
+    "type": "string"
+  },
+  "dropdown/panelProps": {
+    "description": "Uses to pass all properties of the HTMLDivElement to the overlay panel inside the component.",
+    "type": "object"
+  },
+  "dropdown/filterInputProps": {
+    "description": "Uses to pass all properties of the HTMLInputElement to the filter input inside the component.",
+    "type": "object"
+  },
+  "dropdown/clearIconProps": {
+    "description": "Uses to pass all properties of the HTMLElement to the clear icon inside the component.",
+    "type": "object"
+  },
+  "dropdown/appendTo": {
+    "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are 'body' for document body and 'self' for the element itself.",
     "type": "string"
   },
   "dropdown/loading": {
@@ -1370,6 +1430,42 @@
   "dropdown/virtualScrollerOptions": {
     "description": "Whether to use the virtualScroller feature. The properties of VirtualScroller component can be used like an object in it.",
     "type": "object"
+  },
+  "dropdown/autoOptionFocus": {
+    "description": "Whether to focus on the first visible or selected element when the overlay panel is shown.",
+    "type": "boolean"
+  },
+  "dropdown/filterMessage": {
+    "description": "Text to be displayed in hidden accessible field when filtering returns any results. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "dropdown/selectionMessage": {
+    "description": "Text to be displayed in hidden accessible field when options are selected. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "dropdown/emptySelectionMessage": {
+    "description": "Text to be displayed in hidden accessible field when any option is not selected. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "dropdown/emptyFilterMessage": {
+    "description": "Text to display when filtering does not return any results. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "dropdown/emptyMessage": {
+    "description": "Text to display when there are no options available. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "dropdown/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
+  },
+  "dropdown/ariaLabel": {
+    "description": "Defines a string value that labels an interactive element.",
+    "type": "string"
+  },
+  "dropdown/ariaLabelledby": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
   },
   "editor/modelValue": {
     "description": "Value of the content.",
@@ -1755,14 +1851,6 @@
     "description": "Specifies whether a inputswitch should be checked or not.",
     "type": "boolean"
   },
-  "inputswitch/class": {
-    "description": "Style class of the component.",
-    "type": "string"
-  },
-  "inputswitch/style": {
-    "description": "Inline of the component.",
-    "type": "any"
-  },
   "inputswitch/trueValue": {
     "description": "Value in checked state.",
     "type": "any"
@@ -1770,6 +1858,18 @@
   "inputswitch/falseValue": {
     "description": "Value in unchecked state.",
     "type": "any"
+  },
+  "inputswitch/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
+  },
+  "inputswitch/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "any"
+  },
+  "inputswitch/inputClass": {
+    "description": "Style class of the input field.",
+    "type": "string"
   },
   "inputtext/modelValue": {
     "description": "Value of the component.",
@@ -1825,6 +1925,18 @@
   },
   "knob/valueTemplate": {
     "description": "Template string of the value.",
+    "type": "string"
+  },
+  "knob/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
+  },
+  "knob/aria-labelledby": {
+    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "knob/aria-label": {
+    "description": "Used to define a string that labels the element.",
     "type": "string"
   },
   "listbox/modelValue": {
@@ -1999,6 +2111,46 @@
     "description": "Height of the viewport, a scrollbar is defined if height of list exceeds this value.",
     "type": "string"
   },
+  "multiselect/placeholder": {
+    "description": "Label to display when there are no selections.",
+    "type": "string"
+  },
+  "multiselect/disabled": {
+    "description": "When present, it specifies that the component should be disabled.",
+    "type": "boolean"
+  },
+  "multiselect/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
+  },
+  "multiselect/inputProps": {
+    "description": "Uses to pass all properties of the HTMLInputElement to the focusable input element inside the component.",
+    "type": "object"
+  },
+  "multiselect/panelStyle": {
+    "description": "Inline style of the overlay panel.",
+    "type": "object"
+  },
+  "multiselect/panelClass": {
+    "description": "Style class of the overlay panel.",
+    "type": "string"
+  },
+  "multiselect/panelProps": {
+    "description": "Uses to pass all properties of the HTMLDivElement to the overlay panel.",
+    "type": "object"
+  },
+  "multiselect/filterInputProps": {
+    "description": "Uses to pass all properties of the HTMLInputElement to the filter input inside the overlay panel.",
+    "type": "object"
+  },
+  "multiselect/closeButtonProps": {
+    "description": "Uses to pass all properties of the HTMLButtonElement to the close button inside the overlay panel.",
+    "type": "object"
+  },
+  "multiselect/dataKey": {
+    "description": "A property to uniquely identify an option.",
+    "type": "string"
+  },
   "multiselect/filter": {
     "description": "When specified, displays a filter input at header.",
     "type": "boolean"
@@ -2019,45 +2171,21 @@
     "description": "Fields used when filtering the options, defaults to optionLabel.",
     "type": "array"
   },
-  "multiselect/placeholder": {
-    "description": "Label to display when there are no selections.",
-    "type": "string"
-  },
-  "multiselect/disabled": {
-    "description": "When present, it specifies that the component should be disabled.",
-    "type": "boolean"
-  },
-  "multiselect/tabindex": {
-    "description": "Index of the element in tabbing order.",
-    "type": "string"
-  },
-  "multiselect/inputId": {
-    "description": "Identifier of the underlying input element.",
-    "type": "string"
-  },
-  "multiselect/dataKey": {
-    "description": "A property to uniquely identify an option.",
-    "type": "string"
-  },
-  "multiselect/ariaLabelledBy": {
-    "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are \"body\" for document body and \"self\" for the element itself.",
-    "type": "string"
-  },
-  "multiselect/emptyFilterMessage": {
-    "description": "Text to display when filtering does not return any results. Defaults to value from PrimeVue locale configuration.",
-    "type": "string"
-  },
-  "multiselect/emptyMessage": {
-    "description": "Text to display when there are no options available. Defaults to value from PrimeVue locale configuration.",
+  "multiselect/appendTo": {
+    "description": "A valid query selector or an HTMLElement to specify where the overlay gets attached. Special keywords are 'body' for document body and 'self' for the element itself.",
     "type": "string"
   },
   "multiselect/display": {
     "description": "Defines how the selected items are displayed, valid values are \"comma\" and \"chip\".",
     "type": "string"
   },
-  "multiselect/panelClass": {
-    "description": "Style class of the overlay panel.",
+  "multiselect/selectedItemsLabel": {
+    "description": "Label to display after exceeding max selected labels.",
     "type": "string"
+  },
+  "multiselect/maxSelectedLabels": {
+    "description": "Decides how many selected item labels to show at most.",
+    "type": "number"
   },
   "multiselect/selectionLimit": {
     "description": "Maximum number of selectable items.",
@@ -2075,14 +2203,6 @@
     "description": "Icon to display in loading state.",
     "type": "string"
   },
-  "multiselect/maxSelectedLabels": {
-    "description": "Decides how many selected item labels to show at most.",
-    "type": "number"
-  },
-  "multiselect/selectedItemsLabel": {
-    "description": "Label to display after exceeding max selected labels.",
-    "type": "string"
-  },
   "multiselect/selectAll": {
     "description": "Whether all data is selected.",
     "type": "boolean"
@@ -2094,6 +2214,42 @@
   "multiselect/virtualScrollerOptions": {
     "description": "Whether to use the virtualScroller feature. The properties of VirtualScroller component can be used like an object in it.",
     "type": "object"
+  },
+  "multiselect/autoOptionFocus": {
+    "description": "Whether to focus on the first visible or selected element when the overlay panel is shown.",
+    "type": "boolean"
+  },
+  "multiselect/filterMessage": {
+    "description": "Text to be displayed in hidden accessible field when filtering returns any results. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "multiselect/selectionMessage": {
+    "description": "Text to be displayed in hidden accessible field when options are selected. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "multiselect/emptySelectionMessage": {
+    "description": "Text to be displayed in hidden accessible field when any option is not selected. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "multiselect/emptyFilterMessage": {
+    "description": "Text to display when filtering does not return any results. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "multiselect/emptyMessage": {
+    "description": "Text to display when there are no options available. Defaults to value from PrimeVue locale configuration.",
+    "type": "string"
+  },
+  "multiselect/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
+  },
+  "multiselect/ariaLabel": {
+    "description": "Defines a string value that labels an interactive element.",
+    "type": "string"
+  },
+  "multiselect/ariaLabelledby": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
   },
   "orderlist/modelValue": {
     "description": "Value of the component.",
@@ -2235,6 +2391,10 @@
     "description": "Value of the component.",
     "type": "any"
   },
+  "password/inputId": {
+    "description": "Identifier of the underlying input element.",
+    "type": "string"
+  },
   "password/promptLabel": {
     "description": "Text to prompt password entry. Defaults to PrimeVue Locale configuration.",
     "type": "string"
@@ -2287,16 +2447,16 @@
     "description": "Style class of the input field.",
     "type": "any"
   },
-  "password/class": {
-    "description": "Style class of the component.",
+  "password/panelId": {
+    "description": "Identifier of the underlying overlay panel element.",
     "type": "string"
-  },
-  "password/style": {
-    "description": "Inline of the component.",
-    "type": "any"
   },
   "password/panelClass": {
     "description": "Style class of the overlay panel.",
+    "type": "string"
+  },
+  "password/panelStyle": {
+    "description": "Inline style of the overlay panel.",
     "type": "string"
   },
   "picklist/modelValue": {
@@ -2329,6 +2489,14 @@
   },
   "picklist/stripedRows": {
     "description": "Whether to displays rows with alternating colors.",
+    "type": "boolean"
+  },
+  "picklist/showSourceControls": {
+    "description": "Whether to show buttons of source list.",
+    "type": "boolean"
+  },
+  "picklist/showTargetControls": {
+    "description": "Whether to show buttons of target list.",
     "type": "boolean"
   },
   "portal/appendTo": {
@@ -2447,10 +2615,6 @@
     "description": "A property to uniquely identify an option.",
     "type": "string"
   },
-  "selectbutton/ariaLabelledBy": {
-    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
-    "type": "string"
-  },
   "sidebar/visible": {
     "description": "Specifies the visibility of the dialog.",
     "type": "boolean"
@@ -2535,8 +2699,16 @@
     "description": "When present, it specifies that the component should be disabled.",
     "type": "boolean"
   },
-  "slider/ariaLabelledBy": {
+  "slider/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
+  },
+  "slider/aria-labelledby": {
     "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "slider/aria-label": {
+    "description": "Used to define a string that labels the element.",
     "type": "string"
   },
   "speeddial/model": {
@@ -2831,6 +3003,26 @@
     "description": "Position of the icon, valid values are \"left\" and \"right\".",
     "type": "string"
   },
+  "togglebutton/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number"
+  },
+  "togglebutton/disabled": {
+    "description": "When present, it specifies that the element should be disabled.",
+    "type": "boolean"
+  },
+  "togglebutton/inputId": {
+    "description": "Identifier of the focus input to match a label defined for the chips.",
+    "type": "string"
+  },
+  "togglebutton/inputClass": {
+    "description": "Style class of the input field.",
+    "type": "string"
+  },
+  "togglebutton/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "any"
+  },
   "tree/value": {
     "description": "An array of treenodes.",
     "type": "any"
@@ -2911,8 +3103,12 @@
     "description": "Identifier of the underlying input element.",
     "type": "string"
   },
-  "treeselect/ariaLabelledBy": {
-    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+  "treeselect/inputStyle": {
+    "description": "Inline style of the input field.",
+    "type": "any"
+  },
+  "treeselect/inputClass": {
+    "description": "Style class of the input field.",
     "type": "string"
   },
   "treeselect/selectionMode": {
@@ -2938,6 +3134,14 @@
   "treeselect/metaKeySelection": {
     "description": "Defines how multiple items can be selected, when true metaKey needs to be pressed to select or unselect an item and when set to false selection of each item can be toggled individually. On touch enabled devices, metaKeySelection is turned off automatically.",
     "type": "boolean"
+  },
+  "treeselect/aria-labelledby": {
+    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "treeselect/aria-label": {
+    "description": "Used to define a string that labels the element.",
+    "type": "string"
   },
   "treetable/value": {
     "description": "An array of treenodes.",
@@ -3099,6 +3303,14 @@
     "description": "Inline of the component.",
     "type": "any"
   },
+  "tristatecheckbox/aria-labelledby": {
+    "description": "Establishes relationships between the component and label(s) where its value should be one or more element IDs.",
+    "type": "string"
+  },
+  "tristatecheckbox/aria-label": {
+    "description": "Used to define a string that labels the element.",
+    "type": "string"
+  },
   "virtualscroller/id": {
     "description": "Unique identifier of the element.",
     "type": "string"
@@ -3162,5 +3374,9 @@
   "virtualscroller/showLoader": {
     "description": "Whether to show loader.",
     "type": "boolean"
+  },
+  "virtualscroller/tabindex": {
+    "description": "Index of the element in tabbing order.",
+    "type": "number|string"
   }
 }

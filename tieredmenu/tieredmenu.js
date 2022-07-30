@@ -91,7 +91,7 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                     if (this.activeItem && item === this.activeItem)
                         this.activeItem = null;
                     else
-                       this.activeItem = item;
+                        this.activeItem = item;
                 }
 
                 if (!item.items) {
@@ -230,7 +230,7 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
     const _hoisted_4 = ["href", "target", "aria-haspopup", "aria-expanded", "onClick", "onKeydown", "tabindex"];
     const _hoisted_5 = { class: "p-menuitem-text" };
     const _hoisted_6 = {
-      key: 0,
+      key: 1,
       class: "p-submenu-icon pi pi-angle-right"
     };
 
@@ -273,9 +273,12 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                                   onKeydown: $event => ($options.onItemKeyDown($event, item)),
                                   role: "menuitem"
                                 }, [
-                                  vue.createElementVNode("span", {
-                                    class: vue.normalizeClass(['p-menuitem-icon', item.icon])
-                                  }, null, 2),
+                                  (item.icon)
+                                    ? (vue.openBlock(), vue.createElementBlock("span", {
+                                        key: 0,
+                                        class: vue.normalizeClass(['p-menuitem-icon', item.icon])
+                                      }, null, 2))
+                                    : vue.createCommentVNode("", true),
                                   vue.createElementVNode("span", _hoisted_3, vue.toDisplayString($options.label(item)), 1)
                                 ], 42, _hoisted_2)), [
                                   [_directive_ripple]
@@ -295,9 +298,12 @@ this.primevue.tieredmenu = (function (utils, OverlayEventBus, Portal, Ripple, vu
                               role: "menuitem",
                               tabindex: $options.disabled(item) ? null : '0'
                             }, [
-                              vue.createElementVNode("span", {
-                                class: vue.normalizeClass(['p-menuitem-icon', item.icon])
-                              }, null, 2),
+                              (item.icon)
+                                ? (vue.openBlock(), vue.createElementBlock("span", {
+                                    key: 0,
+                                    class: vue.normalizeClass(['p-menuitem-icon', item.icon])
+                                  }, null, 2))
+                                : vue.createCommentVNode("", true),
                               vue.createElementVNode("span", _hoisted_5, vue.toDisplayString($options.label(item)), 1),
                               (item.items)
                                 ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_6))
