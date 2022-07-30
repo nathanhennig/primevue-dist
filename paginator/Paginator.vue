@@ -1,5 +1,5 @@
 <template>
-	<div class="p-paginator p-component" v-if="alwaysShow ? true : (pageLinks && pageLinks.length > 1)">
+	<nav class="p-paginator p-component" aria-label="pagination" v-if="alwaysShow ? true : (pageLinks && pageLinks.length > 1)">
         <div class="p-paginator-left-content" v-if="$slots.start">
             <slot name="start" :state="currentState"></slot>
         </div>
@@ -20,7 +20,7 @@
         <div class="p-paginator-right-content" v-if="$slots.end">
             <slot name="end" :state="currentState"></slot>
         </div>
-	</div>
+	</nav>
 </template>
 
 <script>

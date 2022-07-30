@@ -1,5 +1,5 @@
 <template>
-	<span class="p-paginator-current">{{text}}</span>
+	<span class="p-paginator-current" aria-live="polite">{{text}}</span>
 </template>
 <script>
 	export default {

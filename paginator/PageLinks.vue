@@ -1,7 +1,7 @@
 <template>
     <span class="p-paginator-pages">
         <button v-for="pageLink of value" :key="pageLink" :class="['p-paginator-page p-paginator-element p-link', {'p-highlight': ((pageLink - 1) === page)}]" type="button"
-            @click="onPageLinkClick($event, pageLink)" v-ripple>{{pageLink}}</button>
+            :aria-current="currentPage(pageLink, page)" @click="onPageLinkClick($event, pageLink)" v-ripple>{{pageLink}}</button>
     </span>
 </template>
 <script>
@@ -21,6 +21,13 @@ export default {
                 originalEvent: event,
                 value: pageLink
             });
+        },
+        currentPage(pageLink, page) {
+            if ((pageLink - 1) === page) {
+                return 'page'
+            }
+
+            return false
         }
     },
     directives: {

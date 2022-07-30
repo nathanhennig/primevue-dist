@@ -56,7 +56,10 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
         		}
         	};
 
-        const _hoisted_1$6 = { class: "p-paginator-current" };
+        const _hoisted_1$6 = {
+          class: "p-paginator-current",
+          "aria-live": "polite"
+        };
 
         function render$9(_ctx, _cache, $props, $setup, $data, $options) {
           return (vue.openBlock(), vue.createElementBlock("span", _hoisted_1$6, vue.toDisplayString($options.text), 1))
@@ -88,7 +91,8 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
 
           return vue.withDirectives((vue.openBlock(), vue.createElementBlock("button", {
             class: vue.normalizeClass($options.containerClass),
-            type: "button"
+            type: "button",
+            "aria-label": "first"
           }, _hoisted_2$5, 2)), [
             [_directive_ripple]
           ])
@@ -120,7 +124,8 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
 
           return vue.withDirectives((vue.openBlock(), vue.createElementBlock("button", {
             class: vue.normalizeClass($options.containerClass),
-            type: "button"
+            type: "button",
+            "aria-label": "last"
           }, _hoisted_2$4, 2)), [
             [_directive_ripple]
           ])
@@ -152,7 +157,8 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
 
           return vue.withDirectives((vue.openBlock(), vue.createElementBlock("button", {
             class: vue.normalizeClass($options.containerClass),
-            type: "button"
+            type: "button",
+            "aria-label": "next"
           }, _hoisted_2$3, 2)), [
             [_directive_ripple]
           ])
@@ -174,6 +180,13 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
                         originalEvent: event,
                         value: pageLink
                     });
+                },
+                currentPage(pageLink, page) {
+                    if ((pageLink - 1) === page) {
+                        return 'page'
+                    }
+
+                    return false
                 }
             },
             directives: {
@@ -182,7 +195,7 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
         };
 
         const _hoisted_1$2 = { class: "p-paginator-pages" };
-        const _hoisted_2$2 = ["onClick"];
+        const _hoisted_2$2 = ["aria-current", "onClick"];
 
         function render$5(_ctx, _cache, $props, $setup, $data, $options) {
           const _directive_ripple = vue.resolveDirective("ripple");
@@ -193,6 +206,7 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
                 key: pageLink,
                 class: vue.normalizeClass(['p-paginator-page p-paginator-element p-link', {'p-highlight': ((pageLink - 1) === $props.page)}]),
                 type: "button",
+                "aria-current": $options.currentPage(pageLink, $props.page),
                 onClick: $event => ($options.onPageLinkClick($event, pageLink))
               }, [
                 vue.createTextVNode(vue.toDisplayString(pageLink), 1)
@@ -229,7 +243,8 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
 
           return vue.withDirectives((vue.openBlock(), vue.createElementBlock("button", {
             class: vue.normalizeClass($options.containerClass),
-            type: "button"
+            type: "button",
+            "aria-label": "previous"
           }, _hoisted_2$1, 2)), [
             [_directive_ripple]
           ])
@@ -539,7 +554,8 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
 
         const _hoisted_1 = {
           key: 0,
-          class: "p-paginator p-component"
+          class: "p-paginator p-component",
+          "aria-label": "pagination"
         };
         const _hoisted_2 = {
           key: 0,
@@ -562,7 +578,7 @@ this.primevue.paginator = (function (vue, Ripple, Dropdown, InputNumber) {
           const _component_JumpToPageInput = vue.resolveComponent("JumpToPageInput");
 
           return ($props.alwaysShow ? true : ($options.pageLinks && $options.pageLinks.length > 1))
-            ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1, [
+            ? (vue.openBlock(), vue.createElementBlock("nav", _hoisted_1, [
                 (_ctx.$slots.start)
                   ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2, [
                       vue.renderSlot(_ctx.$slots, "start", { state: $options.currentState })

@@ -51,7 +51,10 @@ var script$9 = {
 		}
 	};
 
-const _hoisted_1$6 = { class: "p-paginator-current" };
+const _hoisted_1$6 = {
+  class: "p-paginator-current",
+  "aria-live": "polite"
+};
 
 function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return (openBlock(), createElementBlock("span", _hoisted_1$6, toDisplayString($options.text), 1))
@@ -83,7 +86,8 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
 
   return withDirectives((openBlock(), createElementBlock("button", {
     class: normalizeClass($options.containerClass),
-    type: "button"
+    type: "button",
+    "aria-label": "first"
   }, _hoisted_2$5, 2)), [
     [_directive_ripple]
   ])
@@ -115,7 +119,8 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
 
   return withDirectives((openBlock(), createElementBlock("button", {
     class: normalizeClass($options.containerClass),
-    type: "button"
+    type: "button",
+    "aria-label": "last"
   }, _hoisted_2$4, 2)), [
     [_directive_ripple]
   ])
@@ -147,7 +152,8 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
 
   return withDirectives((openBlock(), createElementBlock("button", {
     class: normalizeClass($options.containerClass),
-    type: "button"
+    type: "button",
+    "aria-label": "next"
   }, _hoisted_2$3, 2)), [
     [_directive_ripple]
   ])
@@ -169,6 +175,13 @@ var script$5 = {
                 originalEvent: event,
                 value: pageLink
             });
+        },
+        currentPage(pageLink, page) {
+            if ((pageLink - 1) === page) {
+                return 'page'
+            }
+
+            return false
         }
     },
     directives: {
@@ -177,7 +190,7 @@ var script$5 = {
 };
 
 const _hoisted_1$2 = { class: "p-paginator-pages" };
-const _hoisted_2$2 = ["onClick"];
+const _hoisted_2$2 = ["aria-current", "onClick"];
 
 function render$5(_ctx, _cache, $props, $setup, $data, $options) {
   const _directive_ripple = resolveDirective("ripple");
@@ -188,6 +201,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
         key: pageLink,
         class: normalizeClass(['p-paginator-page p-paginator-element p-link', {'p-highlight': ((pageLink - 1) === $props.page)}]),
         type: "button",
+        "aria-current": $options.currentPage(pageLink, $props.page),
         onClick: $event => ($options.onPageLinkClick($event, pageLink))
       }, [
         createTextVNode(toDisplayString(pageLink), 1)
@@ -224,7 +238,8 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
 
   return withDirectives((openBlock(), createElementBlock("button", {
     class: normalizeClass($options.containerClass),
-    type: "button"
+    type: "button",
+    "aria-label": "previous"
   }, _hoisted_2$1, 2)), [
     [_directive_ripple]
   ])
@@ -534,7 +549,8 @@ var script = {
 
 const _hoisted_1 = {
   key: 0,
-  class: "p-paginator p-component"
+  class: "p-paginator p-component",
+  "aria-label": "pagination"
 };
 const _hoisted_2 = {
   key: 0,
@@ -557,7 +573,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_JumpToPageInput = resolveComponent("JumpToPageInput");
 
   return ($props.alwaysShow ? true : ($options.pageLinks && $options.pageLinks.length > 1))
-    ? (openBlock(), createElementBlock("div", _hoisted_1, [
+    ? (openBlock(), createElementBlock("nav", _hoisted_1, [
         (_ctx.$slots.start)
           ? (openBlock(), createElementBlock("div", _hoisted_2, [
               renderSlot(_ctx.$slots, "start", { state: $options.currentState })
